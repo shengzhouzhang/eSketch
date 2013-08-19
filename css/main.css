@@ -1,0 +1,74 @@
+body {
+  
+ padding: 10px; 
+  
+}
+
+#canves {
+  
+  height: 680px;
+  width: 100%;
+  border:1px solid grey;
+  background-color: #E8E8E8;
+  border: 1px solid #888888;
+}
+
+ul.attributes {
+  
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 10px;
+  list-style-type: none;
+  background-color: #F8F8F8;
+  border: 1px solid #888888;
+}
+
+ul.attributes > li {
+  
+  counter-increment: section;
+  padding: 2px;
+}
+
+ul.attributes > li.activited {
+  
+  border: 1px solid grey;
+  padding: 1px;
+}
+
+ul.attributes > li.info {
+  
+  margin-top: 5px;
+}
+
+ul.attributes > li.number:before {
+  
+  content: counter(section);
+  text-align: right;
+  padding-left: 5px;
+  padding-right: 10px;
+}
+
+ul.attributes > li > span {
+  
+  margin-right: 20px;
+}
+
+ul.attributes > li > span.rotate:before {
+  
+  content:"rotate: ";
+}
+
+ul.attributes > li > span.scaleX:before {
+  
+  content:"scale-x: ";
+}
+
+ul.attributes > li > span.scaleY:before {
+  
+  content:"scale-y: ";
+}
+
+
+
+
