@@ -54,7 +54,7 @@ window.onload = function () {
 
   ]);
   
-  imageFactory.Create("images/sample_5.svg", 10, 420, 150, 170, [
+  imageFactory.Create("images/sample_5.png", 10, 420, 150, 170, [
 
   ]);
   
