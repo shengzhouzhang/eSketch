@@ -92,6 +92,8 @@
       subject: subject
     };
 
+    ft.myoptions = {};
+    
     /**
      * Update handles based on the element's transformations
      */
@@ -164,7 +166,7 @@
               cx = ( corners[j].x + corners[k].x ) / 2;
               cy = ( corners[j].y + corners[k].y ) / 2;
             }
-
+              
             handle.element.toFront()
               .attr({
                 x: cx - ( handle.isCorner ? ft.opts.size.bboxCorners : ft.opts.size.bboxSides ),
@@ -789,8 +791,9 @@
             }
           );
         } else {
+
           item.el.transform([
-            'R', rotate, center.x, center.y,
+            'R', rotate, ft.myoptions.x || center.x, ft.myoptions.y || center.y,
             'S', scale.x, scale.y, center.x, center.y,
             'T', translate.x, translate.y
           ] + ft.items[i].transformString);

@@ -1,228 +1,220 @@
-var Anchor = function(canves) {
+function Anchor(canves, options) {
   
-  var activitedPoints = [];
-  var MagnetRadius = 30;
-  var MagentField = [];
-  var MagentFieldStatus = "undraw";
-  this.MagnetStatus = "notready";
+  Anchor.canves = canves;
+  this.x = options.x;
+  this.y = options.y;
+  this.opacity = options.opacity || 1;
+  this.radius = options.radius || 4;
+  this.equipment = options.equipment;
+  this.linked = [];
+  var obj = this;
   
-  this.light = function(point) {
-    
-    point.attr({fill: "red"});
-    
-    point.status = "normal";
-  };
+  this.element = Anchor.canves.circle(this.x, this.y, this.radius);
   
-  this.hover = function(point) {
-    
-    point.attr({fill: "green"});
-    
-    point.status = "hover";
-  }
+  this.element.attr({opacity: this.opacity});
   
-  this.activite = function(point) {
-    
-    point.attr({fill: "yellow"});
-     
-    point.status = "activited";
-  }
+  this.normalize();
   
-  this.Create = function(options) {
-    
-    var anchor = this;
-    
-    var point = canves.circle(options.x, options.y, options.size);
-    
-    point.set = options.set;
-    
-    anchor.light(point);
-    
-    // hover event
-    point.hover(function() {
-      
-      if (point.status !== "activited") {
-        
-        anchor.hover(point);
-      }
-      
-    }, function(){
-      
-      if (point.status === "hover")
-        anchor.light(point);
-    });
-    
-    // click event
-    point.click(function(){
-      
-      activitedPoints.push(this);
-      
-      if(activitedPoints.length === 2 && activitedPoints[0].set === this.set) {
-          
-        activitedPoints.splice(1, 1);  
-        
-      } else if (activitedPoints.length > 2 && activitedPoints[1].set === this.set) {
-        
-        activitedPoints.splice(2, 1);
-      } else {
-            
-        console.log(2);
-        
-        if (activitedPoints.length > 2) {
-          
-          anchor.light(activitedPoints[0]);
-          activitedPoints.splice(0, 1);
-        }
-        
-        if (point.status !== "activited") {
-        
-          anchor.activite(point);
-        
-        } else {
-        
-          point.status = "hover";
-        }
-        
-        anchor.MagnetReset();
-      }
-      
-    });
-    
-    point.positionX = function() {
-   
-      return point.matrix.x(point.attrs.cx, point.attrs.cy);
-    }
-      
-    point.positionY = function() {
-   
-      return point.matrix.y(point.attrs.cx, point.attrs.cy);
-    }
-    
-    return point;
-  };
+  this.element.click(function(){
   
-  this.Magnet = function() {
-    
-    if (activitedPoints.length === 2 && (activitedPoints[0].set[0].ft.status === "activited" || activitedPoints[1].set[0].ft.status === "activited")) {
-      
-      if (Math.abs(activitedPoints[0].positionX() - activitedPoints[1].positionX()) < MagnetRadius && Math.abs(activitedPoints[0].positionY() - activitedPoints[1].positionY()) < MagnetRadius) {
-        
-        if (this.MagnetStatus !== "ready")
-          this.MagnetStatus = "ready";
-       
-      } else {
-        
-        if (this.MagnetStatus !== "notready")
-          this.MagnetStatus = "notready";
-      }
-      
-      this.drawMagnetField();
-    }
-  };
-  
-  this.MagnetDistance = function() {
-    
-    var movePoint;
-    var waitPoint;
-    
-    activitedPoints.forEach(function(point) {
-    
-      if (point.set[0].ft.status === "activited") {
-        
-        movePoint = point;
-      } else {
-        
-        waitPoint = point;
-      }
-    });
-    
-    var distance = {};
-    
-    distance.x = waitPoint.positionX() - movePoint.positionX();
-    distance.y = waitPoint.positionY() - movePoint.positionY();
+    if (obj.status === Anchor.StatusList.Normal)
+      obj.activite();
+    else if (obj.status === Anchor.StatusList.Pinned)
+      obj.unpin();
+  });
+};
 
-    return distance;
-  };
+/*
+ * ***********************
+ * Anchor's attributes
+ * ***********************
+ */
+
+Anchor.ActivitiedAnchors = [];
+Anchor.Magnet = null;
+Anchor.StatusList = {Normal: "red", Focused: "green", Activited: "yellow",Pinned: "orange"};
+
+Anchor.Join = function(anchor_1, anchor_2) {
   
-  this.MagnetReset = function() {
-   
-    this.MagnetStatus = "notready";
-    this.deleteMagentField();
-  };
+  anchor_1.pin(anchor_2);
+  anchor_2.pin(anchor_1);
+};
+
+/*
+ * ***********************
+ * Anchor's methods
+ * ***********************
+ */
+
+Anchor.prototype.normalize = function() {
   
-  this.drawMagnetField = function() {
+  if (Anchor.ActivitiedAnchors.length >= 2 && Anchor.ActivitiedAnchors[1] === this) {
     
-    if (MagentFieldStatus === "undraw") {
-      
-      activitedPoints.forEach(function(point) {
-        
-        if (point.set[0].ft.status !== "activited") {
-          
-          MagentField.push(canves.circle(point.positionX(), point.positionY(), MagnetRadius).attr({"stroke-dasharray": "--"}));
-          
-          MagentFieldStatus = "draw";
-          
-          return;
-            }
-      });
-    }
-  };
-  
-  this.deleteMagentField = function() {
-    
-    if (MagentFieldStatus === "draw") {
-      
-      MagentField.forEach(function(field){
-      
-        field.remove();
-      });
-      
-      MagentFieldStatus = "undraw";
-    }
-  };
-    
-    
-  this.join = function() {
-    
-    if (activitedPoints.length !== 2)
-      return;
-    
-    if (activitedPoints[0].set.superset === undefined || activitedPoints[1].set.superset === undefined) {
-      
-      var superset = canves.set();
-      
-      superset.push(activitedPoints[0].set);
-      superset.push(activitedPoints[1].set);
-      
-      activitedPoints[0].set[0].ft.hideHandles({undrag: true});
-      activitedPoints[1].set[0].ft.hideHandles({undrag: true});
-      
-      var ftOptions = {draw: ["bbox"], scale: ["bboxCorners", "bboxSides"], rotate: ["axisX"], drag: ["center", "self"], keepRatio: ["bboxCorners"]};
-      
-      superset.ft = canves.freeTransform(superset, ftOptions, function(ft, events) {
-        
-      });
-      
-      activitedPoints[0].set.superset = superset;
-      activitedPoints[1].set.superset = superset;
-      
-    } else if (activitedPoints[0].set.superset !== undefined) {
-      
-      activitedPoints[0].set.superset.push(activitedPoints[1]);
-      
-    } else if (activitedPoints[1].set.superset !== undefined) {
-      
-      activitedPoints[1].set.superset.push(activitedPoints[0]);
-      
-    } else if (activitedPoints[0].set.superset !== activitedPoints[1].set.superset) {
-      
-      activitedPoints[0].set.superset.forEach(function(item) {
-        
-        activitedPoints[1].set.superset.push(item);
-      });
-      
-      activitedPoints[0].set.superset.clear();
-    }
-    
+    Anchor.ActivitiedAnchors.splice(1, 1);
   }
+  
+  if (Anchor.ActivitiedAnchors.length >= 1 && Anchor.ActivitiedAnchors[0] === this) {
     
-}
+    Anchor.ActivitiedAnchors.splice(0, 1);
+  }
+  
+  this.element.attr({fill: Anchor.StatusList.Normal});
+  this.status = Anchor.StatusList.Normal;
+};
+  
+Anchor.prototype.focus = function() {
+    
+  this.element.attr({fill: Anchor.StatusList.Focused});
+  this.status = Anchor.StatusList.Focused;
+};
+  
+Anchor.prototype.activite = function() {
+  
+  if (Anchor.ActivitiedAnchors.length === 0) {
+    
+    Anchor.ActivitiedAnchors.push(this);
+    
+    this.element.attr({fill: Anchor.StatusList.Activited});
+    this.status = Anchor.StatusList.Activited;
+    
+  } else if (Anchor.ActivitiedAnchors.length === 1) {
+    
+    if (Anchor.ActivitiedAnchors[0].equipment === this.equipment) {
+      
+      Anchor.ActivitiedAnchors[0].normalize();
+    }
+    
+    Anchor.ActivitiedAnchors.push(this);
+    
+    this.element.attr({fill: Anchor.StatusList.Activited});
+    this.status = Anchor.StatusList.Activited;
+    
+  } else if (Anchor.ActivitiedAnchors.length >= 2) {
+    
+    if (Anchor.ActivitiedAnchors[1].equipment === this.equipment) {
+      
+      Anchor.ActivitiedAnchors[1].normalize();
+      
+    } else {
+      
+      Anchor.ActivitiedAnchors[0].normalize();
+    }
+    
+    Anchor.ActivitiedAnchors.push(this);
+    
+    this.element.attr({fill: Anchor.StatusList.Activited});
+    this.status = Anchor.StatusList.Activited;
+  }
+};
+
+Anchor.prototype.pin = function(anchor) {
+  
+  this.element.attr({fill: Anchor.StatusList.Pinned});
+  this.status = Anchor.StatusList.Pinned;
+  
+  this.linked.push(anchor);
+  this.equipment.linked.push(anchor.equipment);
+  
+  this.equipment.updateCenter();
+};
+
+Anchor.prototype.unpin = function() {
+  
+  this.linked.forEach(function(anchor){
+  
+    anchor.normalize();
+    anchor.linked.splice(0, anchor.linked.length);
+    
+    var hasPinned = false;
+    
+    anchor.equipment.anchors.forEach(function(item){
+      
+      if (item.status === Anchor.StatusList.Pinned)
+        hasPinned = true;
+    });
+  });
+  
+  this.normalize();
+  this.linked.splice(0, this.linked.length);
+  
+  var hasPinned = false;
+  
+  this.equipment.anchors.forEach(function(anchor){
+  
+    if (anchor.status === Anchor.StatusList.Pinned)
+      hasPinned = true;
+  });
+};
+
+Anchor.prototype.positionX = function() {
+  
+  return this.element.matrix.x(this.element.attrs.cx, this.element.attrs.cy);
+};
+
+Anchor.prototype.positionY = function() {
+  
+  return this.element.matrix.y(this.element.attrs.cx, this.element.attrs.cy);
+};
+
+Anchor.prototype.distanceX = function() {
+  
+  return (this.equipment.freeTransform.center.objectX() - this.positionX());
+};
+
+Anchor.prototype.distanceY = function() {
+  
+  return (this.equipment.freeTransform.center.objectY() - this.positionY());
+};
+
+Anchor.ActiviteMagnet = function() {
+  
+  if (Anchor.ActivitiedAnchors.length === 2 && (Anchor.ActivitiedAnchors[0].equipment.status === Equipment.StatusList.Activited || Anchor.ActivitiedAnchors[1].equipment.status === Equipment.StatusList.Activited) && Anchor.Magnet === null) {
+    
+    if (Anchor.ActivitiedAnchors[0].equipment.status !== Equipment.StatusList.Activited) {
+      
+    Anchor.Magnet = new Magnet(Anchor.canves, {x: Anchor.ActivitiedAnchors[0].positionX(), y: Anchor.ActivitiedAnchors[0].positionY(), anchor: Anchor.ActivitiedAnchors[0]});
+    
+    } else if (Anchor.ActivitiedAnchors[1].equipment.status !== Equipment.StatusList.Activited) {
+      
+      Anchor.Magnet = new Magnet(Anchor.canves, {x: Anchor.ActivitiedAnchors[1].positionX(), y: Anchor.ActivitiedAnchors[1].positionY(), anchor: Anchor.ActivitiedAnchors[1]});
+      
+    }
+  }
+};
+
+Anchor.UnactiviteMagnet = function() {
+  
+  if (Anchor.ActivitiedAnchors.length === 2 && Anchor.Magnet !== null) {
+    
+    if (Anchor.ActivitiedAnchors[0].equipment.status === Equipment.StatusList.Activited && Anchor.ActivitiedAnchors[1].equipment.status === Equipment.StatusList.Normal) {
+      
+
+      if (Anchor.Magnet.pull(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1])) {
+      
+        Anchor.Join(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1]);
+        
+        Anchor.ActivitiedAnchors.splice(0, 2);
+        Anchor.ActivitiedAnchors.length = 0;
+      }
+      
+    } else if (Anchor.ActivitiedAnchors[0].equipment.status === Equipment.StatusList.Normal && Anchor.ActivitiedAnchors[1].equipment.status === Equipment.StatusList.Activited) {
+      
+      if (Anchor.Magnet.pull(Anchor.ActivitiedAnchors[1], Anchor.ActivitiedAnchors[0])) {
+      
+        Anchor.Join(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1]);
+        
+        Anchor.ActivitiedAnchors.splice(0, 2);
+        Anchor.ActivitiedAnchors.length = 0;
+      }
+    }
+  }
+  
+  if (Anchor.Magnet !== null) {
+    
+    Anchor.Magnet.remove();
+    delete Anchor.Magnet;
+    Anchor.Magnet = null;
+  }
+};
+
+
