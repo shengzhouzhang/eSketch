@@ -47,11 +47,17 @@ function Transform(canves, set, callback) {
     },
     historyX: function() {
       
-      return ref.history.x(this.sx, this.sy);
+      if (ref.history)
+        return ref.history.x(this.sx, this.sy);
+      else
+        return this.sx;
     },
     historyY: function() {
       
-      return ref.history.y(this.sx, this.sy);
+      if (ref.history)
+        return ref.history.y(this.sx, this.sy);
+      else
+        return this.sy;
     },
     dragable: function() {
       
@@ -66,6 +72,10 @@ function Transform(canves, set, callback) {
       });
     }
   };
+  
+  this.degree = 0;
+  this.scaleX = 1;
+  this.scaleY = 1;
   
   this.disable = false;
   
@@ -102,6 +112,9 @@ Transform.prototype.getBBox = function() {
     if (bounds.bottom.y == 0 || bbox.y2 > bounds.bottom.y)
       bounds.bottom.y = bbox.y2;
   });
+  
+  this.width = Math.abs(bounds.top.x - bounds.bottom.x);
+  this.height = Math.abs(bounds.top.y - bounds.bottom.y);
   
   return bounds;
 };
@@ -186,6 +199,9 @@ Transform.prototype.dragable = function() {
   var obj = this;
   
   this.elements.forEach(function(item) {
+    
+    if (item.undragable === true)
+      return;
   
     item.drag(function(dx, dy) {
       
@@ -251,6 +267,13 @@ Transform.prototype.rotatable = function() {
     // update history
     obj.updateHistory();
     
+    obj.degree += degree;
+    
+    if (obj.degree > 360)
+      obj.degree -= 360;
+    else if (obj.degree < 0)
+      obj.degree += 360;
+    
     obj.callback(obj, {
       name: "rotate end"});
   });
@@ -261,17 +284,16 @@ Transform.prototype.scalable = function() {
   var obj = this;
   var size = this.handles.size;
   
+  var scaleX;
+  var scaleY;
+  
   this.handles.bbox.boxes.forEach(function(box) {
   
     box.drag(function(dx, dy, x, y) {
       
-      var scaleX;
-      var scaleY;
-      
       scaleX = (this.oscaleX + this.operationX * dx) / this.oscaleX;
       scaleY = (this.oscaleY + this.operationY * dy) / this.oscaleY;
       
-      //console.log(scaleX);
       switch(this.type) {
        
         case "middleX":
@@ -290,7 +312,7 @@ Transform.prototype.scalable = function() {
       
       obj.center.cx = obj.history.x(obj.center.sx , obj.center.sy);
       obj.center.cy = obj.history.y(obj.center.sx , obj.center.sy);
-        
+      
       this.oscaleX = Math.abs(
         obj.history.x(this.attr("x"), this.attr("y")) 
         + size / 2 - obj.center.cx);
@@ -310,9 +332,13 @@ Transform.prototype.scalable = function() {
         this.operationY = 1;
     
     }, function() {
-    
+      
       // update history
       obj.updateHistory();
+      
+      obj.scaleX *= scaleX;
+      obj.scaleY *= scaleY;
+      
     });
   });
 };
@@ -505,6 +531,8 @@ Transform.prototype.transform = function(options) {
       break;
   }
   
+  this.applyTransform(string);
+  /*
   // transform elements
   this.elements.forEach(function(element) {
     
@@ -512,7 +540,62 @@ Transform.prototype.transform = function(options) {
   });
   
   // update handles
-  //this.updateHandle({type: options.type, string: string});
+  for (var type in this.handles) {
+    
+    switch(type) {
+      
+      case "center":
+        this.handles[type].toFront();
+        break;
+      case "handle":
+        this.handles[type].line.transform(string).toFront();
+        this.handles[type].circle.transform(string).toFront();
+        break;
+      case "bbox":
+        
+        this.handles[type].lines.forEach(function(item) {
+          item.transform(string).toFront();
+        });
+        
+        this.handles[type].boxes.forEach(function(item) {
+          item.transform(string).toFront();
+        });
+        
+        break;
+      default:
+        break;
+    }
+  };
+  */
+
+  
+  switch (options.type) {
+   
+    case "rotate":
+      rotate.center = {
+        x: obj.center.transformX(),
+        y: obj.center.transformY()
+      };
+      return  rotate;
+    case "translate":
+      translate.center = center;
+      return translate;
+    case "scale":
+      scale.center = center;
+      return scale;
+    default:
+      return;
+  }
+};
+
+Transform.prototype.applyTransform = function(string) {
+  
+  
+  // transform elements
+  this.elements.forEach(function(element) {
+    
+    element.transform(string);
+  });
   
   for (var type in this.handles) {
     
@@ -540,25 +623,13 @@ Transform.prototype.transform = function(options) {
         break;
     }
   };
+};
 
+Transform.prototype.resetCenter = function() {
+    
+  this.moveCenter({x: this.center.objectX(), y: this.center.objectY()});
   
-  switch (options.type) {
-   
-    case "rotate":
-      rotate.center = {
-        x: obj.center.transformX(),
-        y: obj.center.transformY()
-      };
-      return  rotate;
-    case "translate":
-      translate.center = center;
-      return translate;
-    case "scale":
-      scale.center = center;
-      return scale;
-    default:
-      return;
-  }
+  this.translateDone();
 };
 
 Transform.prototype.updateHandle = function(options) {

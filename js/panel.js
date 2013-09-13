@@ -1,30 +1,33 @@
-function Panel(canves) {
+function Panel(canvas) {
   
-  Panel.canves = canves;
-  this.number_of_items = 0;
-  this.number_of_buttons = 0;
-  
-  this.equipments = [];
-  
-  this.layer2 = [];
+  Panel.canvas = canvas;
   
   this.buttons = [];
 };
 
+Panel.equipments = [];
+Panel.classes = [];
+
 Panel.prototype.register = function(equipment) {
   
-  equipment.id = this.number_of_items++;
+  //$("li.info").before($("<li>").html("<span class='scaleX'></span><span class='scaleY'></span><span class='rotate'></span>").addClass("number"));
   
-  $("li.info").before($("<li>").html("<span class='scaleX'></span><span class='scaleY'></span><span class='rotate'></span>").addClass("number"));
+  equipment.id = Panel.equipments.length;
   
-  this.equipments.push(equipment);
-  
-  if (equipment.layer === 2) {
-   
-   this.layer2.push(equipment); 
-  }
+  Panel.equipments.push(equipment);
   
   equipment.updatePanel = this.update;
+  
+  
+  if (equipment.url && Panel.classes.indexOf(equipment.url) === -1) {
+    
+    if (equipment.youtube !== undefined || equipment.wikipedia !== undefined) {
+      
+      $("<tr>").html("<td class='image'><img src='" + equipment.url + "' /></td><td class='link'>" + (equipment.youtube === undefined ? "" : "<a href='" + equipment.youtube + "' target='_blank'>YouTube</a>") + "</td><td class='link'>" + (equipment.wikipedia === undefined ? "" : "<a href='" + equipment.wikipedia + "' target='_blank'>Wikipedia</a>") + "</td>").appendTo($("table.info"));
+    }
+    
+    Panel.classes.push(equipment.url);
+  }
 }
 
 Panel.prototype.update = function(options) {
@@ -36,134 +39,88 @@ Panel.prototype.update = function(options) {
   item.find("span.scaleY").html(options.scale.y);
 };
 
-Panel.prototype.fadeIn = function() {
-  
-  if (this.layer !== undefined && this.layer !== null)
-      this.layer.toBack();
-  
-  this.equipments.forEach(function(equipment) {
-  
-    equipment.anchors.forEach(function(anchor) {
-    
-      anchor.element.show();
-    });
-    
-    equipment.slots.forEach(function(slot) {
-      
-      slot.hide();
-    }); 
-  });
-  
-  this.layer2.forEach(function(equipment) {
-  
-    equipment.element.hide();
-  });
-};
+Panel.buttons = [
+  {
+    path: "M16,30.534c8.027,0,14.534-6.507,14.534-14.534c0-8.027-6.507-14.534-14.534-14.534C7.973,1.466,1.466,7.973,1.466,16C1.466,24.027,7.973,30.534,16,30.534zM18.335,6.276l3.536,3.538l-6.187,6.187l6.187,6.187l-3.536,3.537l-9.723-9.724L18.335,6.276z",
+   attrs: {"fill": "#000", stroke: "#fff", "stroke-width": 2}
+  },
+  {
+    path: "M16,1.466C7.973,1.466,1.466,7.973,1.466,16c0,8.027,6.507,14.534,14.534,14.534c8.027,0,14.534-6.507,14.534-14.534C30.534,7.973,24.027,1.466,16,1.466zM13.665,25.725l-3.536-3.539l6.187-6.187l-6.187-6.187l3.536-3.536l9.724,9.723L13.665,25.725z",
+   attrs: {"fill": "#000", stroke: "#fff", "stroke-width": 2}
+  },
+  {
+    path: "M2.379,14.729 5.208,11.899 12.958,19.648 25.877,6.733 28.707,9.561 12.958,25.308z",
+    attrs: {"fill": "#000", stroke: "black", "stroke-width": 2}
+  },
+  {
+    path: "M16,4.938c-7.732,0-14,4.701-14,10.5c0,1.981,0.741,3.833,2.016,5.414L2,25.272l5.613-1.44c2.339,1.316,5.237,2.106,8.387,2.106c7.732,0,14-4.701,14-10.5S23.732,4.938,16,4.938zM16.982,21.375h-1.969v-1.889h1.969V21.375zM16.982,17.469v0.625h-1.969v-0.769c0-2.321,2.641-2.689,2.641-4.337c0-0.752-0.672-1.329-1.553-1.329c-0.912,0-1.713,0.672-1.713,0.672l-1.12-1.393c0,0,1.104-1.153,3.009-1.153c1.81,0,3.49,1.121,3.49,3.009C19.768,15.437,16.982,15.741,16.982,17.469z",
+    attrs: {"fill": "#000", stroke: "none"}
+  }
+];
 
-Panel.prototype.fadeOut = function() {
-  
-  if (Equipment.ActivitedEquipment !== null)
-    Equipment.ActivitedEquipment.deactivate(false);
-  
-  this.showLayerTwo();
-  
-  this.equipments.forEach(function(equipment) {
-  
-    equipment.anchors.forEach(function(anchor) {
-    
-      anchor.element.hide();
-    });
-    
-     
-    equipment.slots.forEach(function(slot) {
-      
-      slot.toFront().show();
-    }); 
-  });
-  
-  this.buttons.forEach(function(button) {
-    
-    button.forEach(function(element) {
-      element.toFront();
-    })
-  });
-  
-  this.layer2.forEach(function(equipment) {
-  
-    equipment.element.toFront().show();
-    
-    equipment.anchors.forEach(function(anchor) {
-    
-      anchor.toFront();
-    });
-    
-    equipment.slots.forEach(function(slot) {
-      
-      console.log(slot);
-      slot.toFront().show();
-    });
-  });
-};
-
-Panel.prototype.createButtons = function() {
+Panel.prototype.drawButtons = function() {
   
   var size = 25;
   var marginX = 10;
   var marginY = 10;
   var positionX = marginX + size;
-  var positionY = 0;
+  var positionY = -size;
   
-  positionY += marginX + size * ++this.number_of_buttons;
+  var i;
   
-  var button = Panel.canves.set();
-  
-  button.push(Panel.canves.path("M16,30.534c8.027,0,14.534-6.507,14.534-14.534c0-8.027-6.507-14.534-14.534-14.534C7.973,1.466,1.466,7.973,1.466,16C1.466,24.027,7.973,30.534,16,30.534zM18.335,6.276l3.536,3.538l-6.187,6.187l6.187,6.187l-3.536,3.537l-9.723-9.724L18.335,6.276z").attr({"fill": "#000", stroke: "#fff", "stroke-width": 2}).transform("t" + (positionX - 16) + "," + (positionY - 16) + "s1.2"), Panel.canves.circle(positionX, positionY, size).attr({stroke: "#aaa", fill: "#eee", "fill-opacity": .4, "stroke-width": 2, cursor: "pointer"}));
-  
-
-  button[1].hover(function() {
-  
-    button[1].attr({"stroke": "#999", "fill-opacity": 0});
-  }, function() {
-  
-    button[1].attr({"stroke": "#ccc", "fill-opacity": .4});
-  });
-  
-  this.buttons.push(button);
-  
-  positionY += marginX + size * ++this.number_of_buttons;
-  
-  var button2 = Panel.canves.set();
-  
-  
-  button2.push(Panel.canves.path("M16,1.466C7.973,1.466,1.466,7.973,1.466,16c0,8.027,6.507,14.534,14.534,14.534c8.027,0,14.534-6.507,14.534-14.534C30.534,7.973,24.027,1.466,16,1.466zM13.665,25.725l-3.536-3.539l6.187-6.187l-6.187-6.187l3.536-3.536l9.724,9.723L13.665,25.725z").attr({"fill": "#000", stroke: "#fff", "stroke-width": 2}).transform("t" + (positionX - 16) + "," + (positionY - 16) + "s1.2"), Panel.canves.circle(positionX, positionY, size).attr({stroke: "#ccc", fill: "#fff", "fill-opacity": .4, "stroke-width": 2, cursor: "pointer"}));
-  
-  button2[1].hover(function() {
+  for (i = 0; i < Panel.buttons.length; i++) {
     
-    button2[1].attr({"stroke": "#999", "fill-opacity": 0});
-  }, function() {
+    positionY += marginX + size * 2;
     
-    button2[1].attr({"stroke": "#ccc", "fill-opacity": .4});
-  });
-  
-  this.buttons.push(button2);
+    var button = Panel.canvas.set();
+    var json = Panel.buttons[i];
+    
+    button.push(Panel.canvas.path(json.path).attr(json.attrs).transform("t" + (positionX - 16) + "," + (positionY - 16) + "s1.2"), Panel.canvas.circle(positionX, positionY, size).attr({stroke: "#aaa", fill: "#eee", "fill-opacity": .4, "stroke-width": 1, cursor: "pointer"}));
+    
+    this.buttons.push(button);
+  }
   
   var panel = this;
   
-  button.click(function() {
+  this.buttons[0].click(function() {
 
-    panel.fadeIn();
+    Layer.switchLayer(Panel.equipments, 1);
+     panel.showButtons();
   });
   
-  button2.click(function() {
+  this.buttons[1].click(function() {
 
-    panel.fadeOut();
+    Layer.switchLayer(Panel.equipments, 2);
+    panel.showButtons();
+  });
+  
+  this.buttons[2].click(function() {
+    
+    Answer.output(Panel.equipments);
+  });
+  
+  var showInfo = false;
+  
+  this.buttons[3].click(function() {
+    
+    if (showInfo) {
+      
+      $("table.info").fadeOut("fast");
+      
+      showInfo = false;
+    } else {
+      
+      $("table.info").fadeIn("fast");
+      
+      showInfo = true;
+    }
   });
 };
 
-Panel.prototype.showLayerTwo = function() {
+Panel.prototype.showButtons = function() {
   
-  if (this.layer === undefined || this.layer === null)
-    this.layer = Panel.canves.rect(0, 0, "100%", 680).attr({fill: "while", "fill-opacity": .2});
-  else
-    this.layer.toFront();
-};
+  this.buttons.forEach(function(button) {
+  
+    button.toFront();
+  });
+}

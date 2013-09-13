@@ -1,16 +1,30 @@
 
 $(document).ready(function() {
 
-  var canves = Raphael("canves");
-  var panel = new Panel(canves);
+  var canvas = Raphael("canvas");
+  var panel = new Panel(canvas);
   
-  panel.createButtons();
+  panel.drawButtons();
   
-  equipmentsData.forEach(function(equipment){
-  
-    //equipments.push(new Equipment(canves, panel, equipment));
+  equipmentsData.forEach(function(item) {
     
-    panel.register(new Equipment(canves, equipment));
+    switch(item.type) {
+     
+      case "equipment":
+        panel.register(new Equipment(canvas, item));
+        break;
+      case "pipe":
+        panel.register(new Pipe(canvas, item));
+        break;
+      default:
+        break;
+    }
   });
   
+  Layer.switchLayer(Panel.equipments, 1);
+  
+  var loader = new Loader();
+  
+  $("table.info").hide();
+  $("table.info").draggable();
 });

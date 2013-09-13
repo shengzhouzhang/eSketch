@@ -1,15 +1,19 @@
-function Anchor(canves, options) {
+function Anchor(canvas, options) {
   
-  Anchor.canves = canves;
+  Anchor.canvas = canvas;
+  this.type = "anchor";
+  this.id = null;
+  this.layer = options.layer;
   this.x = options.x;
   this.y = options.y;
   this.opacity = options.opacity || 1;
   this.radius = options.radius || 4;
   this.equipment = options.equipment;
   this.linked = [];
+  
   var obj = this;
   
-  this.element = Anchor.canves.circle(this.x, this.y, this.radius);
+  this.element = Anchor.canvas.circle(this.x, this.y, this.radius);
   
   this.element.attr({opacity: this.opacity});
   
@@ -113,7 +117,6 @@ Anchor.prototype.pin = function(anchor) {
   this.status = Anchor.StatusList.Pinned;
   
   this.linked.push(anchor);
-  this.equipment.linked.push(anchor.equipment);
   
   this.equipment.updateCenter();
 };
@@ -158,12 +161,12 @@ Anchor.prototype.positionY = function() {
 
 Anchor.prototype.distanceX = function() {
   
-  return (this.equipment.freeTransform.center.objectX() - this.positionX());
+  return (this.equipment.transform.center.objectX() - this.positionX());
 };
 
 Anchor.prototype.distanceY = function() {
   
-  return (this.equipment.freeTransform.center.objectY() - this.positionY());
+  return (this.equipment.transform.center.objectY() - this.positionY());
 };
 
 Anchor.ActiviteMagnet = function() {
@@ -172,11 +175,11 @@ Anchor.ActiviteMagnet = function() {
     
     if (Anchor.ActivitiedAnchors[0].equipment.status !== Equipment.StatusList.Activited) {
       
-    Anchor.Magnet = new Magnet(Anchor.canves, {x: Anchor.ActivitiedAnchors[0].positionX(), y: Anchor.ActivitiedAnchors[0].positionY(), anchor: Anchor.ActivitiedAnchors[0]});
+    Anchor.Magnet = new Magnet(Anchor.canvas, {x: Anchor.ActivitiedAnchors[0].positionX(), y: Anchor.ActivitiedAnchors[0].positionY(), anchor: Anchor.ActivitiedAnchors[0]});
     
     } else if (Anchor.ActivitiedAnchors[1].equipment.status !== Equipment.StatusList.Activited) {
       
-      Anchor.Magnet = new Magnet(Anchor.canves, {x: Anchor.ActivitiedAnchors[1].positionX(), y: Anchor.ActivitiedAnchors[1].positionY(), anchor: Anchor.ActivitiedAnchors[1]});
+      Anchor.Magnet = new Magnet(Anchor.canvas, {x: Anchor.ActivitiedAnchors[1].positionX(), y: Anchor.ActivitiedAnchors[1].positionY(), anchor: Anchor.ActivitiedAnchors[1]});
       
     }
   }
