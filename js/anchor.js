@@ -191,8 +191,13 @@ Anchor.UnactiviteMagnet = function() {
     
     if (Anchor.ActivitiedAnchors[0].equipment.status === Equipment.StatusList.Activited && Anchor.ActivitiedAnchors[1].equipment.status === Equipment.StatusList.Normal) {
       
-
-      if (Anchor.Magnet.pull(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1])) {
+      if (Math.abs(
+        Anchor.ActivitiedAnchors[0].positionX() -
+        Anchor.ActivitiedAnchors[1].positionX()) < Magnet.Radius && Math.abs(
+            Anchor.ActivitiedAnchors[0].positionY() -
+            Anchor.ActivitiedAnchors[1].positionY()) < Magnet.Radius) {
+        
+        Anchor.Magnet.pull(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1]);
       
         Anchor.Join(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1]);
         
@@ -202,8 +207,14 @@ Anchor.UnactiviteMagnet = function() {
       
     } else if (Anchor.ActivitiedAnchors[0].equipment.status === Equipment.StatusList.Normal && Anchor.ActivitiedAnchors[1].equipment.status === Equipment.StatusList.Activited) {
       
-      if (Anchor.Magnet.pull(Anchor.ActivitiedAnchors[1], Anchor.ActivitiedAnchors[0])) {
+      if (Math.abs(
+        Anchor.ActivitiedAnchors[0].positionX() -
+        Anchor.ActivitiedAnchors[1].positionX()) < Magnet.Radius && Math.abs(
+            Anchor.ActivitiedAnchors[0].positionY() -
+            Anchor.ActivitiedAnchors[1].positionY()) < Magnet.Radius) {
       
+          Anchor.Magnet.pull(Anchor.ActivitiedAnchors[1], Anchor.ActivitiedAnchors[0]);
+        
         Anchor.Join(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1]);
         
         Anchor.ActivitiedAnchors.splice(0, 2);

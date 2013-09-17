@@ -199,19 +199,23 @@ Equipment.prototype.applyTransform = function() {
         break;
       case "scale":
         
-        obj.executeLinked([obj], function(item) {
-        
-          //item.transform.translate({dx: event.dx, dy: event.dy});
-        });
-        
-        console.log(1);
-        obj.links.forEach(function(link) {
-        
-          link.updateHooked();
+        obj.executeLinked([obj], function(equipment, link) {
+            
+          if (link.linked.length > 0) {
+            
+            Magnet.pull(link.linked[0], link);
+          }
         });
         
         break;
       case "scale end":
+        
+        obj.executeLinked([obj], function(item) {
+        
+          item.transform.translateDone();
+          
+          item.updateCenter();
+        });
         
         break;
       default:

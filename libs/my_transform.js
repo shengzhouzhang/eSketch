@@ -308,6 +308,9 @@ Transform.prototype.scalable = function() {
       
       obj.transform({type: "scale", x: scaleX, y: scaleY});
       
+      obj.callback(obj, {
+        name: "scale"});
+      
     }, function(x, y) {
       
       obj.center.cx = obj.history.x(obj.center.sx , obj.center.sy);
@@ -330,6 +333,9 @@ Transform.prototype.scalable = function() {
         this.operationY = -1;
       else
         this.operationY = 1;
+      
+      obj.callback(obj, {
+        name: "scale start"});
     
     }, function() {
       
@@ -339,6 +345,8 @@ Transform.prototype.scalable = function() {
       obj.scaleX *= scaleX;
       obj.scaleY *= scaleY;
       
+       obj.callback(obj, {
+        name: "scale end"});
     });
   });
 };
