@@ -1,7 +1,7 @@
 /*
  * Transform
  */
-function Transform(canves, set, callback) {
+function Transform(canves, options, callback) {
   
   // require Raphael
   if (canves instanceof Raphael)
@@ -9,7 +9,7 @@ function Transform(canves, set, callback) {
   else
     console.log("Transform initial error");
   
-  this.elements = set;
+  this.elements = options.set;
   
   this.handles = {
     center: null,
@@ -286,10 +286,14 @@ Transform.prototype.scalable = function() {
   
   var scaleX;
   var scaleY;
+
   
   this.handles.bbox.boxes.forEach(function(box) {
   
     box.drag(function(dx, dy, x, y) {
+      
+      if (obj.canScale === false)
+        return;
       
       scaleX = (this.oscaleX + this.operationX * dx) / this.oscaleX;
       scaleY = (this.oscaleY + this.operationY * dy) / this.oscaleY;
@@ -439,9 +443,10 @@ Transform.prototype.translate = function(options) {
     
   }
   
-  this.transform({type: "translate", x: dx, y: dy}); 
+  this.transform({type: "translate", x: dx, y: dy, updateHandle: options.updateHandle}); 
   
-  this.handles.center.transform("t" + ((this.handles.center.odx || 0) + dx) + "," + ((this.handles.center.ody || 0) + dy));
+  if (options.updateHandle !== false)
+    this.handles.center.transform("t" + ((this.handles.center.odx || 0) + dx) + "," + ((this.handles.center.ody || 0) + dy));
   
   return {dx: dx, dy: dy};
 };
@@ -539,7 +544,7 @@ Transform.prototype.transform = function(options) {
       break;
   }
   
-  this.applyTransform(string);
+  this.applyTransform(string, options.updateHandle);
   /*
   // transform elements
   this.elements.forEach(function(element) {
@@ -596,7 +601,7 @@ Transform.prototype.transform = function(options) {
   }
 };
 
-Transform.prototype.applyTransform = function(string) {
+Transform.prototype.applyTransform = function(string, updateHandle) {
   
   
   // transform elements
@@ -605,26 +610,35 @@ Transform.prototype.applyTransform = function(string) {
     element.transform(string);
   });
   
+  if (updateHandle === false)
+    return;
+  
   for (var type in this.handles) {
     
     switch(type) {
       
       case "center":
-        this.handles[type].toFront();
+        if (this.handles[type] !== null)
+          this.handles[type].toFront();
         break;
       case "handle":
-        this.handles[type].line.transform(string).toFront();
-        this.handles[type].circle.transform(string).toFront();
+        
+        if (this.handles[type].line !== null)
+          this.handles[type].line.transform(string).toFront();
+        if (this.handles[type].circle !== null)
+          this.handles[type].circle.transform(string).toFront();
         break;
       case "bbox":
         
-        this.handles[type].lines.forEach(function(item) {
-          item.transform(string).toFront();
-        });
+        if (this.handles[type].line !== null)
+          this.handles[type].lines.forEach(function(item) {
+            item.transform(string).toFront();
+          });
         
-        this.handles[type].boxes.forEach(function(item) {
-          item.transform(string).toFront();
-        });
+        if (this.handles[type].boxes !== null)
+          this.handles[type].boxes.forEach(function(item) {
+            item.transform(string).toFront();
+          });
         
         break;
       default:

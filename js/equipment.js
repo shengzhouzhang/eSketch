@@ -19,17 +19,23 @@ function Equipment(canvas, options) {
   this.status = Equipment.StatusList.Normal;
   
   var obj = this;
-    
+  
   this.set = this.draw(options);
+  
   this.transform = this.applyTransform();
   this.transform.drawHandles();
   this.transform.hideHandles();
+  
+  if (options.components) {
+    this.drawComponent(options);
+  }
   
   if (this.layer === undefined)
     this.element.hide();
   
   // click event mouse down
   this.element.mousedown(function() {
+    
     
     if (Equipment.ActivitedEquipment)
       Equipment.ActivitedEquipment.deactivate();
@@ -67,7 +73,7 @@ Equipment.prototype.draw = function(options) {
   var obj = this;
   
   var set = Equipment.canvas.set();
-  
+    
   this.element = Equipment.canvas.image(this.url, this.x, this.y, this.width, this.length);
   
   set.push(this.element);
@@ -120,11 +126,103 @@ Equipment.prototype.draw = function(options) {
   return set;
 };
 
+Equipment.prototype.drawComponent = function(options) {
+  
+  var obj = this;
+  
+  var sets = [];
+  
+  for (var i = 0; i < options.components.length; i++) {
+    
+    var component = options.components[i];
+    
+    var set = Equipment.canvas.set();
+    
+    var element = Equipment.canvas.image(component.url, this.x + component.x, this.y + component.y, component.width, component.length);
+    
+    element.toBack();
+    
+    set.push(element);
+    
+    if (component.anchors) {
+      
+      component.anchors.forEach(function(anchor) {
+        
+        var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: obj.x +  anchor.x + component.x, y: obj.y + anchor.y + component.y, radius: anchor.radius, opacity: anchor.opacity, equipment: component});
+        
+        anchor.id = obj.anchors.length;
+        
+        obj.anchors.push(anchor);
+        set.push(anchor.element);
+      });
+    }
+    
+    sets.push(set);
+  }
+  
+  this.components = {};
+ 
+  this.components.set = sets[0];
+  this.components.transform = new Transform(Equipment.canvas,{set: this.components.set}, function(transform, event) {
+    
+  });
+  
+  this.components.transform.handles = this.transform.handles;
+  this.components.transform.center = this.transform.center;
+  
+  var ox;
+  
+  var maxX = this.components.set[0].attr("x") + this.width * 0.15;
+  var minX = this.components.set[0].attr("x") - this.width * 0.45;
+  var cx, cx2;
+  
+  this.components.set[0].drag(function(dx, dy, x, y) {
+    
+    var sign = 1;
+    
+    if (obj.transform.history) {
+      
+      var history = obj.transform.history.toTransformString();
+      
+      if (history.indexOf("r") !== -1) {
+        
+        var degree = history.substring(history.indexOf("r"));
+        
+        degree = degree.substring(1, degree.indexOf(","));
+        
+        degree = degree % 360;
+        
+        if (degree > 90 && degree < 270)
+          sign = -1;
+      }
+    }
+    
+    cx = ox + dx * sign;
+    cx2 = ox2 + dx * sign;
+    
+    if (cx > minX && cx < maxX) {
+      
+      this.attr({x: cx});
+      obj.components.set[1].attr({cx: cx2});
+    }
+    
+  }, function(x, y) {
+  
+    ox = this.attr("x");
+    ox2 = obj.components.set[1].attr("cx");
+    
+  }, function() {
+  
+  });
+  
+  this.transform.canScale = false;
+};
+
 Equipment.prototype.applyTransform = function() {
   
   var obj = this;
   
-  var transform = new Transform(Equipment.canvas, this.set, function(transform, event) {
+  var transform = new Transform(Equipment.canvas, {set: this.set}, function(transform, event) {
     
     switch (event.name) {
 
@@ -139,6 +237,12 @@ Equipment.prototype.applyTransform = function() {
           link.updateHooked();
         });
         
+        // update components
+        if (obj.components)
+          obj.components.transform.translate({dx: event.dx, dy: event.dy});
+        
+        
+        // update linked equipments
         obj.executeLinked([obj], function(item) {
           
           item.transform.translate({dx: event.dx, dy: event.dy});
@@ -154,6 +258,8 @@ Equipment.prototype.applyTransform = function() {
         break;
       case "drag end":
         
+         if (obj.components)
+          obj.components.transform.translateDone();
       
         obj.executeLinked([obj], function(item) {
         
@@ -167,6 +273,13 @@ Equipment.prototype.applyTransform = function() {
         
         break;
       case "rotate":
+        
+        if (obj.components)
+          obj.components.transform.rotate({
+            degree: event.degree,
+            x: event.centerX, 
+            y: event.centerY
+          });
         
         obj.executeLinkedbyGrade([obj], function(item) {
           
@@ -184,6 +297,9 @@ Equipment.prototype.applyTransform = function() {
         
         break;
       case "rotate end":
+        
+        if (obj.components)
+          obj.components.transform.rotateDone();
         
         obj.executeLinkedbyGrade([obj], function(item) {
           
@@ -209,6 +325,9 @@ Equipment.prototype.applyTransform = function() {
         
         break;
       case "scale end":
+        
+        if (obj.components)
+          obj.components.transform.translateDone();
         
         obj.executeLinked([obj], function(item) {
         
@@ -346,6 +465,9 @@ Equipment.prototype.fadeOut = function() {
   this.disable = true;
   
   this.element.attr({opacity: .5});
+  
+  if (this.components)
+    this.components.set[0].attr({opacity: .5});
 };
 
 Equipment.prototype.fadeIn = function() {
@@ -353,6 +475,9 @@ Equipment.prototype.fadeIn = function() {
   this.disable = true;
   
   this.element.attr({opacity: 1});
+  
+  if (this.components)
+    this.components.set[0].attr({opacity: 1});
 };
 
 Equipment.prototype.transformString = function() {

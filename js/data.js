@@ -18,35 +18,18 @@ var equipmentsData = [
    youtube: "http://www.youtube.com/watch?v=u6QIpXca9D4",
    wikipedia: "http://en.wikipedia.org/wiki/Backhoe"
   },
-  {type: "equipment", layer: 1, url: "images/sample_3.png", x: 90, y: 350, width: 200, length: 30, anchors: [
-    {layer: 1, x: 10.5, y: 15, radius: 4},
-    {layer: 1, x: 190, y: 15, radius: 4}
+  {type: "equipment", layer: 1, url: "images/sample_3_1.png", x: 120, y: 100, width: 150, length: 30, anchors: [
+    {layer: 1, x: 140, y: 15, radius: 4}
   ], links: [
-    {layer: 2, x: 110, y: 20, width: 5, height: 10},
-    {layer: 2, x: 187, y: 20, width: 5, height: 10}
+    {layer: 2, x: 40, y: 20, width: 5, height: 10},
+    {layer: 2, x: 130, y: 20, width: 5, height: 10}
+  ], components: [
+    {layer: 1, url: "images/sample_3_2.png", width: 150, length: 20, x: -40, y:5, anchors: [
+      {layer: 1, x: 10, y: 10, radius: 4}
+    ]},
   ], grade: 5,
-   youtube: "http://youtu.be/kS986THGE24",
-   wikipedia: "http://en.wikipedia.org/wiki/Hydraulic_cylinder"
-  },
-  {type: "equipment", layer: 1, url: "images/sample_3.png", x: 120, y: 380, width: 200, length: 30, anchors: [
-    {layer: 1, x: 10.5, y: 15, radius: 4},
-    {layer: 1, x: 190, y: 15, radius: 4}
-  ], links: [
-    {layer: 2, x: 110, y: 20, width: 5, height: 10},
-    {layer: 2, x: 187, y: 20, width: 5, height: 10}
-  ], grade: 5,
-   youtube: "http://youtu.be/kS986THGE24",
-   wikipedia: "http://en.wikipedia.org/wiki/Hydraulic_cylinder"
-  },
-  {type: "equipment", layer: 1, url: "images/sample_3.png", x: 150, y: 410, width: 200, length: 30, anchors: [
-    {layer: 1, x: 10.5, y: 15, radius: 4},
-    {layer: 1, x: 190, y: 15, radius: 4}
-  ], links: [
-    {layer: 2, x: 110, y: 20, width: 5, height: 10},
-    {layer: 2, x: 187, y: 20, width: 5, height: 10}
-  ], grade: 5,
-   youtube: "http://youtu.be/kS986THGE24",
-   wikipedia: "http://en.wikipedia.org/wiki/Hydraulic_cylinder"
+    youtube: "http://youtu.be/kS986THGE24",
+    wikipedia: "http://en.wikipedia.org/wiki/Hydraulic_cylinder"
   },
   {type: "equipment", layer: 1, url: "images/sample_4.png", x: 370, y: 300, width: 60, length: 50, anchors: [
     {layer: 1, x: 10, y: 41, radius: 4},

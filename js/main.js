@@ -23,7 +23,7 @@ $(document).ready(function() {
   
   Layer.switchLayer(Panel.equipments, 1);
   
-  var loader = new Loader();
+  //var loader = new Loader();
   
   $("table.info").hide();
   $("table.info").draggable();
