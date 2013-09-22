@@ -14,6 +14,12 @@ Magnet.pull = function(anchor_1, anchor_2) {
     x: anchor_2.positionX() + anchor_1.distanceX(), 
     y: anchor_2.positionY() + anchor_1.distanceY()
   });
+  
+  if (anchor_1.equipment.components)
+    anchor_1.equipment.components.transform.translate({
+      dx: move.dx, 
+      dy: move.dy
+    });
 };
 
 
@@ -24,12 +30,22 @@ Magnet.prototype.pull = function(anchor_1, anchor_2) {
     y: anchor_2.positionY() + anchor_1.distanceY()
   });
   
+  if (anchor_1.equipment.components)
+    anchor_1.equipment.components.transform.translate({dx: move.dx, 
+                                                       dy: move.dy});
+  
   anchor_1.equipment.executeLinked([anchor_1.equipment], function(item) {
     
     item.transform.translate({
       dx: move.dx, 
       dy: move.dy
     });
+    
+    if (item.components)
+      item.components.transform.translate({
+        dx: move.dx, 
+        dy: move.dy
+      });
   });
 };
 

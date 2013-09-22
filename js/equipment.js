@@ -247,6 +247,9 @@ Equipment.prototype.applyTransform = function() {
           
           item.transform.translate({dx: event.dx, dy: event.dy});
           
+          if (item.components)
+            item.components.transform.translate({dx: event.dx, dy: event.dy});
+          
           item.links.forEach(function(link) {
             
             link.updateHooked();
@@ -258,12 +261,15 @@ Equipment.prototype.applyTransform = function() {
         break;
       case "drag end":
         
-         if (obj.components)
-          obj.components.transform.translateDone();
+      if (obj.components)
+        obj.components.transform.transformDone();
       
         obj.executeLinked([obj], function(item) {
-        
-          item.transform.translateDone();
+          
+          if (item.components)
+            item.components.transform.transformDone();
+          
+          item.transform.transformDone();
           
           item.updateCenter();
         });
@@ -299,11 +305,14 @@ Equipment.prototype.applyTransform = function() {
       case "rotate end":
         
         if (obj.components)
-          obj.components.transform.rotateDone();
+          obj.components.transform.transformDone();
         
         obj.executeLinkedbyGrade([obj], function(item) {
           
-          item.transform.rotateDone();
+          if (item.components)
+            item.components.transform.transformDone();
+          
+          item.transform.transformDone();
           
           item.updateCenter();
         });
@@ -327,11 +336,14 @@ Equipment.prototype.applyTransform = function() {
       case "scale end":
         
         if (obj.components)
-          obj.components.transform.translateDone();
+          obj.components.transform.transformDone();
         
         obj.executeLinked([obj], function(item) {
-        
-          item.transform.translateDone();
+          
+          if (item.components)
+            item.components.transform.transformDone();
+          
+          item.transform.transformDone();
           
           item.updateCenter();
         });
@@ -458,6 +470,15 @@ Equipment.prototype.rotate = function (options) {
       y: options.y
     }
   });
+  
+  if (this.components)
+    this.components.transform.rotate({
+      degree: options.degree,
+      center: {
+        x: options.x, 
+        y: options.y
+      }
+    });
 };
 
 Equipment.prototype.fadeOut = function() {
