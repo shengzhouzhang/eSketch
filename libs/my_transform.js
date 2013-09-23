@@ -318,10 +318,10 @@ Transform.prototype.scalable = function() {
         + size / 2 - obj.center.cy);
       
       if (x < obj.center.cx) {
-    	  
+        
         this.operationX = -1;
       } else {
-    	  
+        
         this.operationX = 1;
       }
       
@@ -334,21 +334,21 @@ Transform.prototype.scalable = function() {
         name: "scale start"});
     
     }, function() {
-    	
-	 if (scaleX < 0)
+      
+   if (scaleX < 0)
        obj.flipX *= -1;
-	 
-	 if (scaleY < 0)
-	   obj.flipY *= -1;
-	          
-      console.log(obj.flipX);
+   
+   if (scaleY < 0)
+     obj.flipY *= -1;
+            
+      //console.log(obj.flipX);
       
       obj.transformDone();
       
       obj.callback(obj, 
-    		  {name: "scale end"}
+          {name: "scale end"}
       );
-	});
+  });
   });
 };
 
@@ -388,9 +388,9 @@ Transform.prototype.rotate = function(options) {
 };
 
 Transform.prototype.scale = function(options) {
-	
-	options.type = "scale";
-	this.transform(options);
+  
+  options.type = "scale";
+  this.transform(options);
 };
 
 Transform.prototype.transform = function(options) {
@@ -451,10 +451,10 @@ Transform.prototype.transform = function(options) {
   switch(options.type) {
    
     case "rotate":
-    	if (string.indexOf("m") === -1) 
+      if (string.indexOf("m") === -1) 
             string += "s" + (obj.flipX < 0 ? (obj.flipX * obj.flipY): obj.flipX) + "," + 1 + ",0,0";
-    	
-    	string += "r" + (rotate.degree * (obj.flipX * obj.flipY)) + "," + center.x + "," + center.y;
+      
+      string += "r" + (rotate.degree * (obj.flipX * obj.flipY)) + "," + center.x + "," + center.y;
       break;
     case "translate":
 
@@ -541,7 +541,7 @@ Transform.prototype.applyTransform = function(string, updateHandle) {
 };
 
 Transform.prototype.transformDone = function() {
-	 
+   
   this.handles.center.odx = this.center.transformX() - this.center.sx;
   this.handles.center.ody = this.center.transformY() - this.center.sy;
   
@@ -550,7 +550,7 @@ Transform.prototype.transformDone = function() {
 };
 
 Transform.prototype.showHandles = function() {
-	  
+    
   for (var type in this.handles) {
     
     switch(type) {
@@ -705,7 +705,7 @@ Transform.prototype.updateHandle = function(options) {
 
 
 Transform.prototype.moveCenter = function(options) {
-	  
+    
   if (options !== undefined) {
   
     var dx = options.x - this.center.sx;

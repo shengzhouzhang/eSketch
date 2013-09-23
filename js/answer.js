@@ -10,13 +10,21 @@ Answer.output = function(equipments) {
     relationships: []
   };
   
+  var object;
   equipments.forEach(function(equipment) {
     
-    if (equipment.type === "equipment")
-      answer.objects.push({
+    if (equipment.type === "equipment") {
+      
+      object = {
         id: equipment.id,
         transform: equipment.transformString()
-      });
+      };
+      
+      if (equipment.components)
+        object.components = equipment.components.set[0].matrix.toTransformString();
+      
+      answer.objects.push(object);
+  }
   });
   
   var i;
@@ -43,6 +51,5 @@ Answer.output = function(equipments) {
     });
   });
   
-  alert("I am working on this part : )");
-  //alert(JSON.stringify(answer));
+  alert(JSON.stringify(answer));
 };

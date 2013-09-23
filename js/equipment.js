@@ -364,6 +364,13 @@ Equipment.prototype.activite = function() {
     
     this.status = Equipment.StatusList.Activited;
     
+    /*
+    if (this.components)
+      this.components.set[0].toFront();
+    
+    this.element.toFront();
+    */
+    
     this.transform.showHandles();
     
     Equipment.ActivitedEquipment = this;
