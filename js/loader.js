@@ -17,10 +17,6 @@ function Loader(json) {
       
       equipment.components.transform.transformDone();
     }
-    
-    equipment.transform.resetCenter();
-    equipment.transform.transformDone();
-    //equipment.transform.updateHistory();
   }
   
   for (i = 0; i < answer.relationships.length; i++) {
@@ -30,8 +26,10 @@ function Loader(json) {
     Anchor.Join(
       Panel.equipments[relationship[0].equipment].anchors[relationship[0].anchor], Panel.equipments[relationship[1].equipment].anchors[relationship[1].anchor]
     );
-    
-    //Panel.equipments[relationship[0].equipment].transform.translateDone();
-    //Panel.equipments[relationship[1].equipment].transform.translateDone();
   }
+  
+  Panel.equipments.forEach(function(equipment) {
+  
+    equipment.transform.transformDone();
+  });
 }

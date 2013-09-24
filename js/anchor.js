@@ -185,7 +185,7 @@ Anchor.ActiviteMagnet = function() {
   }
 };
 
-Anchor.UnactiviteMagnet = function() {
+Anchor.UnactiviteMagnet = function(option) {
   
   if (Anchor.ActivitiedAnchors.length === 2 && Anchor.Magnet !== null) {
     
@@ -197,7 +197,7 @@ Anchor.UnactiviteMagnet = function() {
             Anchor.ActivitiedAnchors[0].positionY() -
             Anchor.ActivitiedAnchors[1].positionY()) < Magnet.Radius) {
         
-        Anchor.Magnet.pull(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1]);
+        Anchor.Magnet.pull(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1], option);
       
         Anchor.Join(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1]);
         
@@ -213,7 +213,7 @@ Anchor.UnactiviteMagnet = function() {
             Anchor.ActivitiedAnchors[0].positionY() -
             Anchor.ActivitiedAnchors[1].positionY()) < Magnet.Radius) {
       
-          Anchor.Magnet.pull(Anchor.ActivitiedAnchors[1], Anchor.ActivitiedAnchors[0]);
+          Anchor.Magnet.pull(Anchor.ActivitiedAnchors[1], Anchor.ActivitiedAnchors[0], option);
         
         Anchor.Join(Anchor.ActivitiedAnchors[0], Anchor.ActivitiedAnchors[1]);
         

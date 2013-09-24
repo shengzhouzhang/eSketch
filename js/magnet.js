@@ -8,45 +8,88 @@ function Magnet (canvas, options) {
 
 Magnet.Radius = 30;
 
-Magnet.pull = function(anchor_1, anchor_2) {
-    
+Magnet.pull = function(anchor_1, anchor_2, option) {
+ 
   var move = anchor_1.equipment.transform.translate({
     x: anchor_2.positionX() + anchor_1.distanceX(), 
     y: anchor_2.positionY() + anchor_1.distanceY()
   });
   
-  if (anchor_1.equipment.components)
+  if (anchor_1.equipment.components) {
     anchor_1.equipment.components.transform.translate({
       dx: move.dx, 
       dy: move.dy
     });
+  }
+     
 };
 
 
-Magnet.prototype.pull = function(anchor_1, anchor_2) {
-    
-  var move = anchor_1.equipment.transform.translate({
-    x: anchor_2.positionX() + anchor_1.distanceX(), 
-    y: anchor_2.positionY() + anchor_1.distanceY()
-  });
+Magnet.prototype.pull = function(anchor_1, anchor_2, option) {
   
-  if (anchor_1.equipment.components)
-    anchor_1.equipment.components.transform.translate({dx: move.dx, 
-                                                       dy: move.dy});
-  
-  anchor_1.equipment.executeLinked([anchor_1.equipment], function(item) {
-    
-    item.transform.translate({
-      dx: move.dx, 
-      dy: move.dy
-    });
-    
-    if (item.components)
-      item.components.transform.translate({
-        dx: move.dx, 
-        dy: move.dy
+  switch (option) {
+      
+    case "drag":
+      var move = anchor_1.equipment.transform.translate({
+        x: anchor_2.positionX() + anchor_1.distanceX(), 
+        y: anchor_2.positionY() + anchor_1.distanceY()
       });
-  });
+      
+      if (anchor_1.equipment.components)
+        anchor_1.equipment.components.transform.translate({dx: move.dx, 
+                                                           dy: move.dy});
+      
+      anchor_1.equipment.executeLinked([anchor_1.equipment], function(item) {
+        
+        item.transform.translate({
+          dx: move.dx, 
+          dy: move.dy
+        });
+        
+        if (item.components)
+          item.components.transform.translate({
+            dx: move.dx, 
+            dy: move.dy
+          });
+      });
+      break;
+    case "rotate":
+      
+      var degree = Raphael.angle(
+        anchor_2.positionX(),
+        anchor_2.positionY(),
+        anchor_1.positionX(), 
+        anchor_1.positionY(),
+        anchor_1.equipment.center.positionX(),
+        anchor_1.equipment.center.positionY()
+      );
+      
+      anchor_1.equipment.transform.rotate({
+        degree: degree,
+        center: {
+          x: anchor_1.equipment.center.positionX(),
+          y: anchor_1.equipment.center.positionY(),
+        }
+      });
+      
+      //anchor_1.equipment.transform.transformDone();
+      
+      if (anchor_1.equipment.components) {
+        
+        anchor_1.equipment.components.transform.rotate({
+          degree: degree,
+          center: {
+            x: anchor_1.equipment.center.positionX(),
+            y: anchor_1.equipment.center.positionY(),
+          }
+        });
+        
+        //anchor_1.equipment.components.transform.transformDone();
+      }
+      break;
+    default:
+      break;
+}
 };
 
 Magnet.prototype.rotatePull = function(anchor_1, anchor_2) {

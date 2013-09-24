@@ -384,13 +384,13 @@ Transform.prototype.translate = function(options) {
 Transform.prototype.rotate = function(options) {
 
   options.type = "rotate";
-  this.transform(options);
+  return this.transform(options);
 };
 
 Transform.prototype.scale = function(options) {
   
   options.type = "scale";
-  this.transform(options);
+  return this.transform(options);
 };
 
 Transform.prototype.transform = function(options) {
@@ -417,6 +417,8 @@ Transform.prototype.transform = function(options) {
       
       center.x = invert.x(options.center.x, options.center.y);
       center.y = invert.y(options.center.x, options.center.y);
+      
+      //center = options.center;
     }
     
     rotate.degree = options.degree;

@@ -43,12 +43,6 @@ function Equipment(canvas, options) {
     obj.activite();
   });
   
-  // click event mouse up
-  this.element.mouseup(function() {
-    
-    Anchor.UnactiviteMagnet();
-  });
-  
 };
 
 /*
@@ -140,7 +134,7 @@ Equipment.prototype.drawComponent = function(options) {
     
     var element = Equipment.canvas.image(component.url, this.x + component.x, this.y + component.y, component.width, component.length);
     
-    element.toBack();
+    //element.toBack();
     
     set.push(element);
     
@@ -148,7 +142,7 @@ Equipment.prototype.drawComponent = function(options) {
       
       component.anchors.forEach(function(anchor) {
         
-        var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: obj.x +  anchor.x + component.x, y: obj.y + anchor.y + component.y, radius: anchor.radius, opacity: anchor.opacity, equipment: component});
+        var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: obj.x +  anchor.x + component.x, y: obj.y + anchor.y + component.y, radius: anchor.radius, opacity: anchor.opacity, equipment: obj});
         
         anchor.id = obj.anchors.length;
         
@@ -216,6 +210,10 @@ Equipment.prototype.drawComponent = function(options) {
   });
   
   this.transform.canScale = false;
+  this.set.forEach(function(element) {
+  
+    element.toFront()
+  });
 };
 
 Equipment.prototype.applyTransform = function() {
@@ -230,7 +228,7 @@ Equipment.prototype.applyTransform = function() {
         break;
       case "drag":
         
-        Anchor.ActiviteMagnet();
+        Anchor.ActiviteMagnet("drag");
         
         obj.links.forEach(function(link) {
           
@@ -256,14 +254,12 @@ Equipment.prototype.applyTransform = function() {
           });
         });
         
-        
-        
         break;
       case "drag end":
         
-      if (obj.components)
-        obj.components.transform.transformDone();
-      
+        if (obj.components)
+          obj.components.transform.transformDone();
+        
         obj.executeLinked([obj], function(item) {
           
           if (item.components)
@@ -274,11 +270,15 @@ Equipment.prototype.applyTransform = function() {
           item.updateCenter();
         });
         
+        Anchor.UnactiviteMagnet("drag");
+        
         break;
       case "rotate start":
         
         break;
       case "rotate":
+        
+        Anchor.ActiviteMagnet("rotate");
         
         if (obj.components)
           obj.components.transform.rotate({
@@ -316,6 +316,8 @@ Equipment.prototype.applyTransform = function() {
           
           item.updateCenter();
         });
+        
+        Anchor.UnactiviteMagnet("rotate");
         
         break;
       case "scale start":
@@ -363,13 +365,6 @@ Equipment.prototype.activite = function() {
   if (this.status !== Equipment.StatusList.Activited) {
     
     this.status = Equipment.StatusList.Activited;
-    
-    /*
-    if (this.components)
-      this.components.set[0].toFront();
-    
-    this.element.toFront();
-    */
     
     this.transform.showHandles();
     
