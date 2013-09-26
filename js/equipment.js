@@ -13,6 +13,7 @@ function Equipment(canvas, options) {
   this.length = options.length;
   this.youtube = options.youtube;
   this.wikipedia = options.wikipedia;
+  this.attachTo = null;
   this.anchors = [];
   this.slots = [];
   this.links = [];
@@ -36,7 +37,6 @@ function Equipment(canvas, options) {
   // click event mouse down
   this.element.mousedown(function() {
     
-    
     if (Equipment.ActivitedEquipment)
       Equipment.ActivitedEquipment.deactivate();
       
@@ -45,6 +45,28 @@ function Equipment(canvas, options) {
   
 };
 
+Equipment.isLinked = function(equipment_1, equipment_2) {
+  
+  var isLinked = false;
+  
+  equipment_1.executeLinked([equipment_1], function(equipment) {
+    
+    if (equipment === equipment_2) {
+      
+      isLinked = true;
+    }
+  });
+  
+  return isLinked;
+};
+
+Equipment.saveAll = function() {
+  
+  Panel.equipments.forEach(function(equipment) {
+    
+    equipment.save();
+  });
+}
 /*
  * ***********************
  * Equipment's attributes
@@ -133,8 +155,6 @@ Equipment.prototype.drawComponent = function(options) {
     var set = Equipment.canvas.set();
     
     var element = Equipment.canvas.image(component.url, this.x + component.x, this.y + component.y, component.width, component.length);
-    
-    //element.toBack();
     
     set.push(element);
     
@@ -240,34 +260,27 @@ Equipment.prototype.applyTransform = function() {
           obj.components.transform.translate({dx: event.dx, dy: event.dy});
         
         
-        // update linked equipments
-        obj.executeLinked([obj], function(item) {
+        obj.executeLinked([obj], function(equipment, link) {
           
-          item.transform.translate({dx: event.dx, dy: event.dy});
-          
-          if (item.components)
-            item.components.transform.translate({dx: event.dx, dy: event.dy});
-          
-          item.links.forEach(function(link) {
+          if (link.linked.length > 0) {
             
-            link.updateHooked();
-          });
+            link.linked[0].equipment.translate({
+              x: link.positionX() + link.linked[0].distanceX(), 
+              y: link.positionY() + link.linked[0].distanceY()
+            });
+          }
         });
         
         break;
       case "drag end":
         
-        if (obj.components)
-          obj.components.transform.transformDone();
+        obj.save();
         
-        obj.executeLinked([obj], function(item) {
+        obj.executeLinked([obj], function(equipment) {
           
-          if (item.components)
-            item.components.transform.transformDone();
+          equipment.save();
           
-          item.transform.transformDone();
-          
-          item.updateCenter();
+          equipment.updateCenter();
         });
         
         Anchor.UnactiviteMagnet("drag");
@@ -287,13 +300,19 @@ Equipment.prototype.applyTransform = function() {
             y: event.centerY
           });
         
-        obj.executeLinkedbyGrade([obj], function(item) {
+        obj.executeLinkedbyGrade([obj], function(equipment) {
           
-          item.rotate({
+          equipment.rotate({
             degree: event.degree,
             x: event.centerX, 
             y: event.centerY
           });
+          
+        }, function(equipment, anchor) {
+        
+          console.log(1);
+          Anchor.Break(anchor);
+          
         });
         
         obj.links.forEach(function(link) {
@@ -304,50 +323,45 @@ Equipment.prototype.applyTransform = function() {
         break;
       case "rotate end":
         
-        if (obj.components)
-          obj.components.transform.transformDone();
+        obj.save();
         
-        obj.executeLinkedbyGrade([obj], function(item) {
+        obj.executeLinkedbyGrade([obj], function(equipment) {
           
-          if (item.components)
-            item.components.transform.transformDone();
+          equipment.save();
           
-          item.transform.transformDone();
-          
-          item.updateCenter();
+          equipment.updateCenter();
         });
         
         Anchor.UnactiviteMagnet("rotate");
         
         break;
       case "scale start":
-        
-        //var odx = obj.transform
+
         break;
       case "scale":
         
+        // update linked equipment's position
         obj.executeLinked([obj], function(equipment, link) {
             
           if (link.linked.length > 0) {
             
-            Magnet.pull(link.linked[0], link);
+            link.linked[0].equipment.translate({
+              x: link.positionX() + link.linked[0].distanceX(), 
+              y: link.positionY() + link.linked[0].distanceY()
+            });
           }
         });
         
         break;
       case "scale end":
         
-        if (obj.components)
-          obj.components.transform.transformDone();
+        obj.save();
         
-        obj.executeLinked([obj], function(item) {
+        obj.executeLinked([obj], function(equipment) {
           
-          if (item.components)
-            item.components.transform.transformDone();
+          equipment.save();
           
-          item.transform.transformDone();
-          
-          item.updateCenter();
+          equipment.updateCenter();
         });
         
         break;
@@ -383,54 +397,77 @@ Equipment.prototype.deactivate = function() {
   }
 };
 
-Equipment.prototype.updatePositions = function(list) {
-  
-  this.anchors.forEach(function(anchor) {
-    
-    if (anchor.linked.length != 0 && list.indexOf(anchor.linked[0].equipment) === -1) {
-      
-      anchor.linked[0].equipment.transform.translate({
-        x: anchor.positionX() + anchor.linked[0].distanceX(), 
-        y: anchor.positionY() + anchor.linked[0].distanceY()
-      });
-      
-      list.push(anchor.linked[0].equipment);
-      
-      anchor.linked[0].equipment.updatePositions(list);
-    }
-  });
-}
-
+// Breadth-first traversal
 Equipment.prototype.executeLinked = function(list, method) {
   
+  var hasNew = false;
+  
   this.anchors.forEach(function(anchor) {
     
-    if (anchor.linked.length != 0 && list.indexOf(anchor.linked[0].equipment) === -1) {
+    if (anchor.linked.length != 0 && 
+        list.indexOf(anchor.linked[0].equipment) === -1) {
       
       method(anchor.linked[0].equipment, anchor);
       
       list.push(anchor.linked[0].equipment);
       
-      anchor.linked[0].equipment.executeLinked(list, method);
+      hasNew = true;
     }
   });
+  
+  if (hasNew) {
+    
+    list.forEach(function(equipment) {
+      
+      equipment.executeLinked(list, method);
+    });
+  }
 };
 
-Equipment.prototype.executeLinkedbyGrade = function(list, method) {
+Equipment.prototype.executeLinkedbyGrade = function(list, method, method2) {
   
   this.anchors.forEach(function(anchor) {
     
     if (anchor.linked.length != 0 && 
         list.indexOf(anchor.linked[0].equipment) === -1 && 
-        (anchor.linked[0].equipment.grade > anchor.equipment.grade)) {
+        anchor.linked[0].equipment.grade >= anchor.equipment.grade) {
       
-      method(anchor.linked[0].equipment);
+      var largestGrade = anchor.linked[0].equipment.findLargestGrade();
       
-      list.push(anchor.linked[0].equipment);
+      var linked = anchor.linked[0].equipment;
       
-      anchor.linked[0].equipment.executeLinkedbyGrade(list, method);
+      if (largestGrade.grade >= anchor.equipment.grade) {
+        
+        method(anchor.linked[0].equipment);
+      } else if (method2 !== undefined) {
+        
+        method2(anchor.linked[0].equipment, anchor.linked[0]);
+      }
+        
+      list.push(linked);
+      
+      linked.executeLinkedbyGrade(list, method, method2);
     }
   });
+};
+
+Equipment.prototype.findLargestGrade = function() {
+  
+  var largest;
+  
+  this.anchors.forEach(function(anchor) {
+  
+    if (anchor.linked.length > 0) {
+      
+      if (largest === undefined || 
+          largest.grade > anchor.linked[0].equipment.grade) {
+        
+        largest = anchor.linked[0].equipment;
+      }
+    }
+  });
+  
+  return largest;
 };
 
 Equipment.prototype.updateCenter = function() {
@@ -461,6 +498,24 @@ Equipment.prototype.updateCenter = function() {
       x: obj.center.positionX(),
       y: obj.center.positionY()
     });
+};
+
+Equipment.prototype.translate = function (options) {
+  
+  if (options.x !== undefined && options.y !== undefined) {
+    
+    this.transform.translate({x: options.x, y: options.y});
+    
+    if (this.components)
+      this.components.transform.translate({x: options.x, y: options.y});
+    
+  } else if (options.dx !== undefined && options.dy !== undefined) {
+    
+    var move = this.transform.translate({dx: options.dx, dy: options.dy});
+    
+    if (this.components)
+      this.components.transform.translate({dx: move.dx, dy: move.dy});
+  }
 };
 
 Equipment.prototype.rotate = function (options) {
@@ -509,5 +564,13 @@ Equipment.prototype.transformString = function() {
     return this.transform.history.toTransformString();
   else
     return ""; 
+};
+
+Equipment.prototype.save = function() {
+  
+  this.transform.transformDone();
+  
+  if (this.components)
+    this.components.transform.transformDone();
 };
 

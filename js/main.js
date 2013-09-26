@@ -4,17 +4,6 @@ $(document).ready(function() {
   var canvas = Raphael("canvas");
   var panel = new Panel(canvas);
   
-  /*
-  console.log(Raphael.angle(
-    10, 
-    0,
-    0,
-    10,
-    0,
-    0
-   ));
-  */
-  
   panel.drawButtons();
   
   equipmentsData.forEach(function(item) {

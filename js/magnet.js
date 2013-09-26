@@ -8,38 +8,26 @@ function Magnet (canvas, options) {
 
 Magnet.Radius = 30;
 
-Magnet.pull = function(anchor_1, anchor_2, option) {
- 
-  var move = anchor_1.equipment.transform.translate({
-    x: anchor_2.positionX() + anchor_1.distanceX(), 
-    y: anchor_2.positionY() + anchor_1.distanceY()
-  });
-  
-  if (anchor_1.equipment.components) {
-    anchor_1.equipment.components.transform.translate({
-      dx: move.dx, 
-      dy: move.dy
-    });
-  }
-     
-};
-
 
 Magnet.prototype.pull = function(anchor_1, anchor_2, option) {
+  
+  var equipment_1 = anchor_1.equipment;
+  var equipment_2 = anchor_2.equipment;
   
   switch (option) {
       
     case "drag":
-      var move = anchor_1.equipment.transform.translate({
+      
+      var move = equipment_1.transform.translate({
         x: anchor_2.positionX() + anchor_1.distanceX(), 
         y: anchor_2.positionY() + anchor_1.distanceY()
       });
       
-      if (anchor_1.equipment.components)
-        anchor_1.equipment.components.transform.translate({dx: move.dx, 
+      if (equipment_1.components)
+        equipment_1.components.transform.translate({dx: move.dx, 
                                                            dy: move.dy});
       
-      anchor_1.equipment.executeLinked([anchor_1.equipment], function(item) {
+      equipment_1.executeLinked([anchor_1.equipment], function(item) {
         
         item.transform.translate({
           dx: move.dx, 
@@ -60,36 +48,35 @@ Magnet.prototype.pull = function(anchor_1, anchor_2, option) {
         anchor_2.positionY(),
         anchor_1.positionX(), 
         anchor_1.positionY(),
-        anchor_1.equipment.center.positionX(),
-        anchor_1.equipment.center.positionY()
+        equipment_1.center.positionX(),
+        equipment_1.center.positionY()
       );
       
-      anchor_1.equipment.transform.rotate({
+      equipment_1.transform.rotate({
         degree: degree,
         center: {
-          x: anchor_1.equipment.center.positionX(),
-          y: anchor_1.equipment.center.positionY(),
+          x: equipment_1.center.positionX(),
+          y: equipment_1.center.positionY(),
         }
       });
       
-      //anchor_1.equipment.transform.transformDone();
-      
-      if (anchor_1.equipment.components) {
+      if (equipment_1.components) {
         
-        anchor_1.equipment.components.transform.rotate({
+        equipment_1.components.transform.rotate({
           degree: degree,
           center: {
-            x: anchor_1.equipment.center.positionX(),
-            y: anchor_1.equipment.center.positionY(),
+            x: equipment_1.center.positionX(),
+            y: equipment_1.center.positionY(),
           }
         });
-        
-        //anchor_1.equipment.components.transform.transformDone();
       }
       break;
-    default:
+        default:
       break;
-}
+  }
+  
+  equipment_1.save();
+  equipment_2.save();
 };
 
 Magnet.prototype.rotatePull = function(anchor_1, anchor_2) {

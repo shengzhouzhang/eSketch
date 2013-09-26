@@ -28,8 +28,5 @@ function Loader(json) {
     );
   }
   
-  Panel.equipments.forEach(function(equipment) {
-  
-    equipment.transform.transformDone();
-  });
+  Equipment.saveAll();
 }
