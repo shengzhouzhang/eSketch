@@ -25,7 +25,7 @@ var equipmentsData = [
     {layer: 2, x: 130, y: 20, width: 5, height: 10}
   ], components: [
     {layer: 1, url: "images/sample_3_2.png", width: 150, length: 20, x: -40, y:5, anchors: [
-      {layer: 1, x: 10, y: 10, radius: 4}
+      {x: 10, y: 10, radius: 4}
     ]},
   ], grade: 5,
     youtube: "http://youtu.be/kS986THGE24",
@@ -38,7 +38,7 @@ var equipmentsData = [
     {layer: 2, x: 130, y: 20, width: 5, height: 10}
   ], components: [
     {layer: 1, url: "images/sample_3_2.png", width: 150, length: 20, x: -40, y:5, anchors: [
-      {layer: 1, x: 10, y: 10, radius: 4}
+      {x: 10, y: 10, radius: 4}
     ]},
   ], grade: 5,
     youtube: "http://youtu.be/kS986THGE24",
@@ -51,18 +51,18 @@ var equipmentsData = [
     {layer: 2, x: 130, y: 20, width: 5, height: 10}
   ], components: [
     {layer: 1, url: "images/sample_3_2.png", width: 150, length: 20, x: -40, y:5, anchors: [
-      {layer: 1, x: 10, y: 10, radius: 4}
+      {x: 10, y: 10, radius: 4}
     ]},
   ], grade: 5,
     youtube: "http://youtu.be/kS986THGE24",
     wikipedia: "http://en.wikipedia.org/wiki/Hydraulic_cylinder"
   },
   {type: "equipment", layer: 1, url: "images/sample_4.png", x: 370, y: 300, width: 60, length: 50, anchors: [
-    {layer: 1, x: 10, y: 41, radius: 4},
+    {x: 10, y: 41, radius: 4},
     {layer: 1, x: 49, y: 9, radius: 4}
   ], grade: 6},
   {type: "equipment", layer: 1, url: "images/sample_4.png", x: 420, y: 300, width: 60, length: 50, anchors: [
-    {layer: 1, x: 10, y: 41, radius: 4},
+    {x: 10, y: 41, radius: 4},
     {layer: 1, x: 49, y: 9, radius: 4}
   ], grade: 6},
   {type: "equipment", layer: 1, url: "images/sample_5.png", x: 10, y: 420, width: 150, length: 170, anchors: [

@@ -10,10 +10,13 @@ function Anchor(canvas, options) {
   this.radius = options.radius || 4;
   this.equipment = options.equipment;
   this.linked = [];
-  
+  this.hidden = options.hidden;
   var obj = this;
   
   this.element = Anchor.canvas.circle(this.x, this.y, this.radius);
+  
+  if (this.hidden)
+    this.element.hide();
   
   this.element.attr({opacity: this.opacity});
   

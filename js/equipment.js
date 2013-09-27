@@ -98,7 +98,7 @@ Equipment.prototype.draw = function(options) {
     
     options.anchors.forEach(function(anchor) {
       
-      var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: anchor.x + obj.x, y: anchor.y + obj.y, radius: anchor.radius, opacity: anchor.opacity, equipment: obj});
+      var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: anchor.x + obj.x, y: anchor.y + obj.y, radius: anchor.radius, opacity: anchor.opacity, equipment: obj, hidden: anchor.hidden});
       
       anchor.id = obj.anchors.length;
  

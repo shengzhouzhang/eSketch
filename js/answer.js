@@ -17,6 +17,7 @@ Answer.output = function(equipments) {
       
       object = {
         id: equipment.id,
+        type: equipment.url,
         transform: equipment.transformString()
       };
       
@@ -44,14 +45,12 @@ Answer.output = function(equipments) {
         }
       
         answer.relationships.push([
-          {equipment: anchor.equipment.id, anchor: anchor.id},
-          {equipment: link.equipment.id, anchor: link.id}
+          {equipment: anchor.equipment.id, anchor: anchor.id, type: anchor.equipment.url},
+          {equipment: link.equipment.id, anchor: link.id, type: link.equipment.url}
         ]);
       });
     });
   });
   
-  console.log(JSON.stringify(answer));
-  
-  return JSON.stringify(answer);
+  return answer;
 };

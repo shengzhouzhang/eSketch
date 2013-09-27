@@ -12,6 +12,8 @@ Panel.prototype.register = function(equipment) {
   
   equipment.id = Panel.equipments.length;
   
+  equipment.class = Panel.classes.length;
+  
   Panel.equipments.push(equipment);
   
   equipment.updatePanel = this.update;
@@ -101,7 +103,9 @@ Panel.prototype.drawButtons = function() {
   
   this.buttons[2].click(function() {
     
-    Answer.output(Panel.equipments);
+    //console.log(JSON.stringify(Answer.output(Panel.equipments)));
+    
+    var mark = new Mark();
   });
   
   var showInfo = false;
