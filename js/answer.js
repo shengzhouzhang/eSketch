@@ -51,5 +51,7 @@ Answer.output = function(equipments) {
     });
   });
   
-  alert(JSON.stringify(answer));
+  console.log(JSON.stringify(answer));
+  
+  return JSON.stringify(answer);
 };

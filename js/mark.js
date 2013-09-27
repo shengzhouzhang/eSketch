@@ -1,0 +1,9 @@
+function Mark() {
+  
+  var answer = Answer.output(Panel.equipments);
+  var mark_sheet = {"objects":[{"id":0,"transform":"t535.2249623919338,-79.15308966198175s1.0532,1.0532,0,0r53.1613,0,0"},{"id":1,"transform":"t-344.66396951593504,154.00850428197333s0.9184,0.9184,0,0r-49.8135,0,0"},{"id":2,"transform":"t312.75791087066506,-50.70150310262976r51.4455,0,0","components":"t312.75791087066506,-50.70150310262976r51.4455,0,0"},{"id":3,"transform":"t-110.18249938099893,236.37723427780531r-44.1874,0,0","components":"t-110.18249938099893,236.37723427780531r-44.1874,0,0"},{"id":4,"transform":"t537.5743517122211,135.01823321104933r83.8269,0,0","components":"t537.5743517122211,135.01823321104933r83.8269,0,0"},{"id":5,"transform":"t131.31169720384096,-230.50201670871468r53.0021,0,0"},{"id":6,"transform":"t-439.635365178671,523.0110551124613r-58.272,0,0"},{"id":7,"transform":"t286.38934571532906,873.6992428874614r169.15,0,0"},{"id":8,"transform":"t97.99950960722106,-173.01906360895066"},{"id":9,"transform":"t258.57613362980794,-204.43701572396753s1.1651,1.1651,0,0"},{"id":10,"transform":""},{"id":11,"transform":""}],"relationships":[[{"equipment":0,"anchor":0},{"equipment":1,"anchor":2}],[{"equipment":0,"anchor":2},{"equipment":2,"anchor":0}],[{"equipment":0,"anchor":3},{"equipment":8,"anchor":1}],[{"equipment":1,"anchor":0},{"equipment":7,"anchor":0}],[{"equipment":1,"anchor":1},{"equipment":5,"anchor":1}],[{"equipment":1,"anchor":4},{"equipment":3,"anchor":0}],[{"equipment":4,"anchor":0},{"equipment":8,"anchor":0}],[{"equipment":6,"anchor":0},{"equipment":7,"anchor":1}],[{"equipment":8,"anchor":2},{"equipment":9,"anchor":0}]]};
+  
+  mark_sheet.relationships.forEach(function(relationship) {
+  
+  });
+};

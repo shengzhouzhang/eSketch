@@ -13,7 +13,6 @@ function Equipment(canvas, options) {
   this.length = options.length;
   this.youtube = options.youtube;
   this.wikipedia = options.wikipedia;
-  this.attachTo = null;
   this.anchors = [];
   this.slots = [];
   this.links = [];
