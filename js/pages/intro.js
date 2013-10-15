@@ -38,6 +38,7 @@ $(document).ready(function() {
     }
   });
   
+
   $("#start_quiz").click(function(event){
   
     event.preventDefault();
@@ -49,7 +50,7 @@ $(document).ready(function() {
     
 
     if (option_3 === "Excavator")
-      var quiz_window = window.open("./pages/excavator.html");
+      var quiz_window = window.open("./excavator.html");
     
     //quiz_window.username = username;
     //quiz_window.option = option;
@@ -57,4 +58,5 @@ $(document).ready(function() {
     $('#quiz').modal('hide');
     
   });
+
 });

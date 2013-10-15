@@ -8,7 +8,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <style type="text/css">
       body {
         padding-top: 20px;
@@ -30,7 +30,7 @@
         text-align: center;
       }
       .jumbotron h1 {
-        font-size: 100px;
+        font-size: 80px;
         line-height: 1;
       }
       .jumbotron .lead {
@@ -80,8 +80,8 @@
         border-radius: 0 3px 3px 0;
       }
     </style>
-    <link href="libs/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+    <link href="../libs/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/main.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -198,22 +198,31 @@
                       <input type="radio" name="equipment" id="case2" value="Truck">Truck
                     </label>
                   </td>
+                  <td>
+                    <label class="radio">
+                      <input type="radio" name="quiz" id="case1" value="Excavator" checked>Assignment
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="quiz" id="case2" value="Crane">Quiz
+                    </label>
+                  </td>
                 </tr>
               </table>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn">Close</a>
-        <a id="start_quiz" href="#" class="btn btn-primary">Start Quiz</a>
+        <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <!-- <a href="#" class="btn" aria-hidden="true">Close</a> -->
+        <a id="start_quiz" href="#" class="btn btn-primary">Chose</a>
       </div>
     </div>
 
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="libs/jquery.js"></script>
-    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/intro.js"></script>
+    <script src="../libs/jquery.js"></script>
+    <script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/pages/intro.js"></script>
   </body>
 </html>
