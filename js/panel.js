@@ -108,20 +108,16 @@ Panel.prototype.drawButtons = function() {
     var mark = new Mark();
   });
   
-  var showInfo = false;
-  
   this.buttons[3].click(function() {
     
-    if (showInfo) {
+    var references = window.open("./pages/excavator.html");
+    
+    references.onload = function() {
       
-      $("table.info").fadeOut("fast");
+      var button = references.document.getElementById("start_quiz");
       
-      showInfo = false;
-    } else {
-      
-      $("table.info").fadeIn("fast");
-      
-      showInfo = true;
+      button.className = button.className + " disabled";
+      //console.log(button);
     }
   });
 };

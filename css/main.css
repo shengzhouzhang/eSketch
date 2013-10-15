@@ -118,5 +118,18 @@ table.info img {
   max-height: 30px;
 }
 
+form.quiz {
+ 
+  margin-left: 10px;
+  margin-right: 10px;
+}
 
+form.quiz table {
+  
+  height: 80px;
+}
 
+form.quiz table td {
+ 
+  width: 150px;
+}

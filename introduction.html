@@ -81,6 +81,7 @@
       }
     </style>
     <link href="libs/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -90,9 +91,9 @@
     <!-- Fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
-                    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
-                                   <link rel="shortcut icon" href="../assets/ico/favicon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="../assets/ico/favicon.png">
   </head>
 
   <body>
@@ -121,7 +122,7 @@
       <div class="jumbotron">
         <h1>Online Quiz</h1>
         <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <a id="start" class="btn btn-large btn-success" href="#">Get started today</a>
+        <a id="start" class="btn btn-large btn-success" href="#">Choose Equipment</a>
       </div>
 
       <hr>
@@ -160,28 +161,45 @@
       </div>
       <div class="modal-body">
         <p></p>
-        <form class="form-horizontal">
-          <div class="control-group">
-            <label class="control-label">User ID</label>
-            <div class="controls">
-              <input type="text" id="zpass" placeholder="your zpass">
-            </div>
+        
+        <form class="quiz">
+          <div class="form-group">
+            <h5>User ID</h5>
+            <input type="text" class="form-control" id="zpass" placeholder="your zpass">
           </div>
-          <div class="control-group">
-            <div class="controls">
-              <label class="radio">
-                <input type="radio" name="cases" id="case1" value="1" checked>
-                Case one
-              </label>
-              <label class="radio">
-                <input type="radio" name="cases" id="case2" value="2">
-                Case two
-              </label>
-              <label class="radio">
-                <input type="radio" name="cases" id="case3" value="3">
-                Case three
-              </label>
-            </div>
+          <div class="form-group">
+            <h5>Sketching Options</h5>
+            <table class="options" >
+                <tr>
+                  <td>
+                    <label class="radio">
+                      <input type="radio" name="engineering_sketching" id="case1" value="Static_ES" checked>Static ES
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="engineering_sketching" id="case2" value="Dynamic_ES">Dynamic ES
+                    </label>
+                  </td>
+                  <td>
+                    <label class="radio">
+                      <input type="radio" name="static_es" id="case1" value="Equipment" checked>Equipment
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="static_es" id="case2" value="Environment">Environment
+                    </label>
+                  </td>
+                  <td>
+                    <label class="radio">
+                      <input type="radio" name="equipment" id="case1" value="Excavator" checked>Excavator
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="equipment" id="case2" value="Crane">Crane
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="equipment" id="case2" value="Truck">Truck
+                    </label>
+                  </td>
+                </tr>
+              </table>
           </div>
         </form>
       </div>

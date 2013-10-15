@@ -6,8 +6,7 @@ function Magnet (canvas, options) {
   this.anchor = options.anchor;
 };
 
-Magnet.Radius = 30;
-
+Magnet.Radius = 20;
 
 Magnet.prototype.pull = function(anchor_1, anchor_2, option) {
   

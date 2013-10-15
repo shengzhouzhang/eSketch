@@ -73,8 +73,6 @@ function Transform(canves, options, callback) {
     }
   };
   
-  this.disable = false;
-  
   this.flipX = 1;
   this.flipY = 1;
   
@@ -141,6 +139,9 @@ Transform.prototype.drawHandles = function() {
   
   this.handles.center = Transform.canves.circle(this.center.sx, this.center.sy, size / 1.5).attr({fill: "white"});
   
+  // hide the center point
+  //this.handles.center.hide();
+  
   this.handles.handle.circle = Transform.canves.circle((box.top.x + box.bottom.x) / 2, box.top.y - Math.max((box.bottom.y - box.top.y) * 0.15, 30), size / 1.5).attr({fill: "white"});
       
   for (var position_1 in box) {
@@ -201,6 +202,9 @@ Transform.prototype.dragable = function(option) {
   this.elements.forEach(function(item) {
     
     if (option === false)
+      return;
+        
+    if (item.dragable === false)
       return;
   
     item.drag(function(dx, dy) {
@@ -297,12 +301,12 @@ Transform.prototype.scalable = function() {
           scaleX = scaleY;
       }
       
-      obj.scale({x: scaleX, y: scaleY});
-      
-      //console.log(obj.elements[0].matrix.toTransformString());
+      var result = obj.scale({x: scaleX, y: scaleY});
       
       obj.callback(obj, {
-        name: "scale"});
+        name: "scale", 
+        scale: result
+      });
       
     }, function(x, y) {
       
@@ -340,8 +344,6 @@ Transform.prototype.scalable = function() {
    
    if (scaleY < 0)
      obj.flipY *= -1;
-            
-      //console.log(obj.flipX);
       
       obj.transformDone();
       
@@ -558,10 +560,10 @@ Transform.prototype.showHandles = function() {
     switch(type) {
       
       case "center":
-        this.handles[type].show();
+        //this.handles[type].hide();
         break;
       case "handle":
-        this.handles[type].line.show();
+        //this.handles[type].line.show();
         this.handles[type].circle.show();
         break;
       case "bbox":

@@ -22,13 +22,20 @@ function Anchor(canvas, options) {
   
   this.normalize();
   
-  this.element.click(function(){
+  if (options.color) {
+
+    this.element.attr({fill: options.color});
     
-    if (obj.status === Anchor.StatusList.Normal)
-      obj.activite();
-    else if (obj.status === Anchor.StatusList.Pinned)
-      obj.unpin();
-  });
+  } else {
+  
+    this.element.click(function(){
+      
+      if (obj.status === Anchor.StatusList.Normal)
+        obj.activite();
+      else if (obj.status === Anchor.StatusList.Pinned)
+        obj.unpin();
+    });
+  }
 };
 
 /*

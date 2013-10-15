@@ -42,6 +42,8 @@ function Equipment(canvas, options) {
     obj.activite();
   });
   
+  this.scale({x: 0.7, y: 0.7});
+  this.save();
 };
 
 Equipment.isLinked = function(equipment_1, equipment_2) {
@@ -66,12 +68,13 @@ Equipment.saveAll = function() {
     equipment.save();
   });
 }
+
+  
 /*
  * ***********************
  * Equipment's attributes
  * ***********************
  */
-
 Equipment.StatusList = {Normal: "nromal", Activited: "activited"};
 
 Equipment.ActivitedEquipment = null;
@@ -98,7 +101,7 @@ Equipment.prototype.draw = function(options) {
     
     options.anchors.forEach(function(anchor) {
       
-      var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: anchor.x + obj.x, y: anchor.y + obj.y, radius: anchor.radius, opacity: anchor.opacity, equipment: obj, hidden: anchor.hidden});
+      var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: anchor.x + obj.x, y: anchor.y + obj.y, radius: anchor.radius, opacity: anchor.opacity, equipment: obj, hidden: anchor.hidden, color: anchor.color});
       
       anchor.id = obj.anchors.length;
  
@@ -115,6 +118,7 @@ Equipment.prototype.draw = function(options) {
       var link = new Link(Equipment.canvas, {layer: link.layer, x: obj.x + link.x, y: obj.y + link.y, width: link.width, height: link.height, radius: link.radius, location: link.location});
       
       link.id = obj.links.length;
+      link.element.dragable = false;
       obj.links.push(link);
       set.push(link.element);
     });
@@ -161,7 +165,9 @@ Equipment.prototype.drawComponent = function(options) {
       
       component.anchors.forEach(function(anchor) {
         
-        var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: obj.x +  anchor.x + component.x, y: obj.y + anchor.y + component.y, radius: anchor.radius, opacity: anchor.opacity, equipment: obj});
+        //console.log(anchor.color);
+        
+        var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: obj.x +  anchor.x + component.x, y: obj.y + anchor.y + component.y, radius: anchor.radius, opacity: anchor.opacity, equipment: obj, color: anchor.color});
         
         anchor.id = obj.anchors.length;
         
@@ -177,7 +183,9 @@ Equipment.prototype.drawComponent = function(options) {
  
   this.components.set = sets[0];
   this.components.transform = new Transform(Equipment.canvas,{set: this.components.set}, function(transform, event) {
-    
+
+    //
+    console.log(event.name);
   });
   
   this.components.transform.handles = this.transform.handles;
@@ -189,6 +197,7 @@ Equipment.prototype.drawComponent = function(options) {
   var minX = this.components.set[0].attr("x") - this.width * 0.45;
   var cx, cx2;
   
+  //
   this.components.set[0].drag(function(dx, dy, x, y) {
     
     var sign = 1;
@@ -219,6 +228,8 @@ Equipment.prototype.drawComponent = function(options) {
       obj.components.set[1].attr({cx: cx2});
     }
     
+    obj.checkHiddenPoint();
+    
   }, function(x, y) {
   
     ox = this.attr("x");
@@ -228,11 +239,65 @@ Equipment.prototype.drawComponent = function(options) {
   
   });
   
-  this.transform.canScale = false;
   this.set.forEach(function(element) {
   
-    element.toFront()
+    element.toFront();
   });
+};
+
+Equipment.prototype.checkHiddenPoint = function() {
+  
+  var obj = this;
+  
+  var point_x_1, point_y_1, point_x_2, point_y_2, radius = 5;
+  
+  var show = false;
+  
+  var hiddenPoints = [], show = [false, false, false];
+  
+  Panel.equipments.forEach(function(equipment) {
+    
+    
+    if (equipment.url === "images/sample_3_1.png") {
+      
+      hiddenPoints.push(equipment.anchors[1]);
+    }
+  });
+  
+  Panel.equipments.forEach(function(equipment) {
+    
+    equipment.anchors.forEach(function(anchor) {
+      
+      var i;
+      
+      for (i = 0; i < hiddenPoints.length; i++) {
+        
+        point_x_1 = hiddenPoints[i].positionX();
+        point_y_1 = hiddenPoints[i].positionY();
+        
+        if (anchor.status === Anchor.StatusList.Normal && anchor !== hiddenPoints[i]) {
+          
+          // check distance
+          point_x_2 = anchor.positionX();
+          point_y_2 = anchor.positionY();
+          
+          if (Math.abs(point_x_1 - point_x_2) < radius && 
+              Math.abs(point_y_1 - point_y_2) < radius) {
+            
+            show[i] = true;
+          }
+        }
+      };
+    });
+  });
+  
+  for (i = 0; i < hiddenPoints.length; i++) {
+    
+    if (show[i])
+      hiddenPoints[i].element.show();
+    else
+      hiddenPoints[i].element.hide();
+  }
 };
 
 Equipment.prototype.applyTransform = function() {
@@ -292,12 +357,14 @@ Equipment.prototype.applyTransform = function() {
         
         Anchor.ActiviteMagnet("rotate");
         
-        if (obj.components)
+        if (obj.components) {
+          
           obj.components.transform.rotate({
             degree: event.degree,
             x: event.centerX, 
             y: event.centerY
           });
+        }
         
         obj.executeLinkedbyGrade([obj], function(equipment) {
           
@@ -309,9 +376,7 @@ Equipment.prototype.applyTransform = function() {
           
         }, function(equipment, anchor) {
         
-          console.log(1);
           Anchor.Break(anchor);
-          
         });
         
         obj.links.forEach(function(link) {
@@ -338,6 +403,14 @@ Equipment.prototype.applyTransform = function() {
 
         break;
       case "scale":
+        
+        if (obj.components) {
+          
+          obj.components.transform.scale({
+            x: event.scale.x, 
+            y: event.scale.y
+          });
+        }
         
         // update linked equipment's position
         obj.executeLinked([obj], function(equipment, link) {
@@ -367,6 +440,8 @@ Equipment.prototype.applyTransform = function() {
       default:
         break;
     }
+    
+    obj.checkHiddenPoint();
   });
   
   return transform;
@@ -478,7 +553,7 @@ Equipment.prototype.updateCenter = function() {
   // find the rotate center
   obj.anchors.forEach(function(anchor) {
     
-    if (anchor.linked.length != 0 && anchor.linked[0].equipment.grade <= obj.grade) {
+    if (anchor.linked.length !== 0 && anchor.linked[0].equipment.grade <= obj.grade) {
       
       if (max === -1 || 
           anchor.linked[0].equipment.grade < max) {
@@ -489,7 +564,8 @@ Equipment.prototype.updateCenter = function() {
     }
   });
           
-  if ((obj.center === undefined || obj.center === null) || obj.grade > center.equipment.grade)
+  if (center !== undefined && 
+      ((obj.center === undefined || obj.center === null) || obj.grade > center.equipment.grade))
     obj.center = center;
   
   if (obj.center !== undefined && obj.center !== null)
@@ -505,15 +581,21 @@ Equipment.prototype.translate = function (options) {
     
     this.transform.translate({x: options.x, y: options.y});
     
-    if (this.components)
+    if (this.components) {
+      
       this.components.transform.translate({x: options.x, y: options.y});
+      //this.checkHiddenPoint();
+    }
     
   } else if (options.dx !== undefined && options.dy !== undefined) {
     
     var move = this.transform.translate({dx: options.dx, dy: options.dy});
     
-    if (this.components)
+    if (this.components) {
+      
       this.components.transform.translate({dx: move.dx, dy: move.dy});
+      //this.checkHiddenPoint();
+    }
   }
 };
 
@@ -527,7 +609,7 @@ Equipment.prototype.rotate = function (options) {
     }
   });
   
-  if (this.components)
+  if (this.components) {
     this.components.transform.rotate({
       degree: options.degree,
       center: {
@@ -535,6 +617,27 @@ Equipment.prototype.rotate = function (options) {
         y: options.y
       }
     });
+  
+    //this.checkHiddenPoint();
+  }
+};
+
+Equipment.prototype.scale = function (options) {
+  
+  this.transform.scale({
+    x: options.x,
+    y: options.y
+  });
+  
+  if (this.components) {
+    
+    this.components.transform.scale({
+      x: options.x,
+      y: options.y
+    });
+  
+    //this.checkHiddenPoint();
+  }
 };
 
 Equipment.prototype.fadeOut = function() {
