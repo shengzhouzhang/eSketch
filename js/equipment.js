@@ -2,6 +2,7 @@ function Equipment(canvas, options) {
   
   Equipment.canvas = canvas;
   this.type = "equipment";
+  this.name = options.name;
   this.id = null;
   this.layer = options.layer;
   this.window = options.window;
@@ -637,6 +638,48 @@ Equipment.prototype.scale = function (options) {
     });
   
     //this.checkHiddenPoint();
+  }
+};
+
+Equipment.prototype.show = function(layer) {
+  
+  if (this.layer != layer) {
+   
+   // hide everything
+    this.element.hide();
+    
+    if (this.components)
+      this.components.set[0].hide();
+    
+  } else {
+   
+    this.element.show();
+    if (this.components)
+      this.components.set[0].show();
+    
+    this.anchors.forEach(function(anchor) {
+      
+      if (anchor.layer != layer)
+        anchor.element.hide();
+      else
+        anchor.element.show();
+    });
+    
+    this.slots.forEach(function(slot) {
+      
+      if (slot.layer != layer)
+        slot.element.hide();
+      else
+        slot.element.show();
+    });
+    
+    this.links.forEach(function(link) {
+    
+      if (link.layer != layer)
+        link.element.hide();
+      else
+        link.element.show();
+    });
   }
 };
 

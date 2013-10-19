@@ -87,12 +87,14 @@ table.info tr {
 
 table.info tr:hover {
   opacity: 1;
+  cursor: pointer;
 }
 
 table.info td {
   
-  padding: 5px 10px 5px 10px;
+  padding: 5px;
   height: 30px;
+  text-align: center;
 }
 
 table.info td a{

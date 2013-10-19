@@ -1,34 +1,62 @@
 function Panel(canvas) {
   
+  var panel = this;
+  
   Panel.canvas = canvas;
   
   this.buttons = [];
+  
+  $( "table.info" ).on( "click", "tr", function(event, event2) {
+    
+    console.log(event);
+
+    event.preventDefault();
+    
+    var index = $(this).attr("id");
+        
+     console.log(index);
+
+    panel.createEquipment(index);
+  });
 };
 
 Panel.equipments = [];
 Panel.classes = [];
+Panel.equipmentTypes = [];
 
 Panel.prototype.register = function(equipment) {
   
+  var panel = this;
+
+  if (equipment.url && 
+      Panel.classes.indexOf(equipment.url) === -1 &&
+      equipment.layer == 1) {
+    
+    equipment.x = 100;
+    equipment.y = 100;
+    
+    $("<tr>").html("<td class='image'><img src='" + equipment.url + "' /></td><td>" + equipment.name + "</td>").attr("id", Panel.equipmentTypes.length).appendTo($("table.info"));
+    
+    Panel.classes.push(equipment.url);
+    
+    Panel.equipmentTypes.push(equipment);
+  }
+};
+  
+Panel.prototype.createEquipment = function(index) {
+  
+  var item = Panel.equipmentTypes[index];
+  
+  var equipment = new Equipment(Panel.canvas, item, {});
+      
   equipment.id = Panel.equipments.length;
   
   equipment.class = Panel.classes.length;
   
+  equipment.show("1");
+  
   Panel.equipments.push(equipment);
-  
-  equipment.updatePanel = this.update;
-  
-  
-  if (equipment.url && Panel.classes.indexOf(equipment.url) === -1) {
-    
-    if (equipment.youtube !== undefined || equipment.wikipedia !== undefined) {
-      
-      $("<tr>").html("<td class='image'><img src='" + equipment.url + "' /></td><td class='link'>" + (equipment.youtube === undefined ? "" : "<a href='" + equipment.youtube + "' target='_blank'>YouTube</a>") + "</td><td class='link'>" + (equipment.wikipedia === undefined ? "" : "<a href='" + equipment.wikipedia + "' target='_blank'>Wikipedia</a>") + "</td>").appendTo($("table.info"));
-    }
-    
-    Panel.classes.push(equipment.url);
-  }
-}
+};
 
 Panel.prototype.update = function(options) {
   
@@ -58,7 +86,7 @@ Panel.buttons = [
   {
     path: "M16,4.938c-7.732,0-14,4.701-14,10.5c0,1.981,0.741,3.833,2.016,5.414L2,25.272l5.613-1.44c2.339,1.316,5.237,2.106,8.387,2.106c7.732,0,14-4.701,14-10.5S23.732,4.938,16,4.938zM16.982,21.375h-1.969v-1.889h1.969V21.375zM16.982,17.469v0.625h-1.969v-0.769c0-2.321,2.641-2.689,2.641-4.337c0-0.752-0.672-1.329-1.553-1.329c-0.912,0-1.713,0.672-1.713,0.672l-1.12-1.393c0,0,1.104-1.153,3.009-1.153c1.81,0,3.49,1.121,3.49,3.009C19.768,15.437,16.982,15.741,16.982,17.469z",
     attrs: {"fill": "#000", stroke: "none"},
-    text: "References"
+    text: "Guide"
   }
 ];
 
@@ -117,7 +145,6 @@ Panel.prototype.drawButtons = function() {
       var button = references.document.getElementById("start_quiz");
       
       button.className = button.className + " disabled";
-      //console.log(button);
     }
   });
 };
