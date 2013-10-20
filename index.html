@@ -9,7 +9,25 @@
 <body>
   <!- workplace ->
   <table class="info"></table>
+  
   <div id="canvas"></div>
+  
+  <div id="markModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Marking</h4>
+        </div>
+        <div class="modal-body">
+          <p>One fine body&hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
   
   <!- javascript libraries ->
   <script src="libs/jquery.js"></script>
@@ -23,11 +41,13 @@
   <script src="js/mark.js"></script>
   <script src="js/panel.js"></script>
   <script src="js/layer.js"></script>
+  <script src="js/element.js"></script>
   <script src="js/magnet.js"></script>
   <script src="js/anchor.js"></script>
   <script src="js/link.js"></script>
   <script src="js/window.js"></script>
   <script src="js/slot.js"></script>
+  <script src="js/component.js"></script>
   <script src="js/equipment.js"></script>
   <script src="js/pipe.js"></script>
   <script src="js/loader.js"></script>

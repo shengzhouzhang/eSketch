@@ -98,17 +98,18 @@ Transform.prototype.getBBox = function() {
   
   this.elements.forEach(function(element) {
   
+    var margin = 5;
     var bbox = element.getBBox();
     
     if (bounds.top.x == 0 || bbox.x < bounds.top.x)
-      bounds.top.x = bbox.x;
+      bounds.top.x = bbox.x - margin;
     if (bounds.top.y == 0 || bbox.y < bounds.top.y)
-      bounds.top.y = bbox.y;
+      bounds.top.y = bbox.y - margin;
     
     if (bounds.bottom.x == 0 || bbox.x2 > bounds.bottom.x)
-      bounds.bottom.x = bbox.x2;
+      bounds.bottom.x = bbox.x2 + margin;
     if (bounds.bottom.y == 0 || bbox.y2 > bounds.bottom.y)
-      bounds.bottom.y = bbox.y2;
+      bounds.bottom.y = bbox.y2 + margin;
   });
   
   this.width = Math.abs(bounds.top.x - bounds.bottom.x);
@@ -560,20 +561,20 @@ Transform.prototype.showHandles = function() {
     switch(type) {
       
       case "center":
-        //this.handles[type].hide();
+        this.handles[type].show();
         break;
       case "handle":
         //this.handles[type].line.show();
-        this.handles[type].circle.show();
+        this.handles[type].circle.toFront().show();
         break;
       case "bbox":
         
         this.handles[type].lines.forEach(function(item) {
-          item.show();
+          item.toFront().show();
         });
         
         this.handles[type].boxes.forEach(function(item) {
-          item.show();
+          item.toFront().show();
         });
         break;
       default:

@@ -7,19 +7,16 @@ function Panel(canvas) {
   this.buttons = [];
   
   $( "table.info" ).on( "click", "tr", function(event, event2) {
-    
-    console.log(event);
 
     event.preventDefault();
     
     var index = $(this).attr("id");
-        
-     console.log(index);
 
     panel.createEquipment(index);
   });
 };
 
+Panel.layer = 1;
 Panel.equipments = [];
 Panel.classes = [];
 Panel.equipmentTypes = [];
@@ -28,19 +25,57 @@ Panel.prototype.register = function(equipment) {
   
   var panel = this;
 
-  if (equipment.url && 
-      Panel.classes.indexOf(equipment.url) === -1 &&
+  if (equipment.name && 
+      Panel.equipmentTypes.indexOf(equipment.name) === -1 &&
       equipment.layer == 1) {
     
-    equipment.x = 100;
-    equipment.y = 100;
+   this.position(equipment);
     
     $("<tr>").html("<td class='image'><img src='" + equipment.url + "' /></td><td>" + equipment.name + "</td>").attr("id", Panel.equipmentTypes.length).appendTo($("table.info"));
     
-    Panel.classes.push(equipment.url);
-    
+    Panel.classes.push(equipment.name);
     Panel.equipmentTypes.push(equipment);
   }
+};
+
+Panel.prototype.position = function(equipment) {
+  
+  equipment.x = 200;
+  equipment.y = 100;
+  
+  if (equipment.anchors)
+    equipment.anchors.forEach(function(anchor) {
+      
+      anchor.x += equipment.x;
+      anchor.y += equipment.y;
+    });
+  
+  if (equipment.links)
+    equipment.links.forEach(function(link) {
+      
+      link.x += equipment.x;
+      link.y += equipment.y;
+    });
+  
+  if (equipment.slots)
+    equipment.slots.forEach(function(slot) {
+      
+      slot.x += equipment.x;
+      slot.y += equipment.y;
+    });
+  
+  if (equipment.components)
+    equipment.components.forEach(function(component) {
+      
+      component.x += equipment.x;
+      component.y += equipment.y;
+      
+      component.anchors.forEach(function(anchor) {
+        
+        anchor.x += component.x;
+        anchor.y += component.y;
+      });
+    });
 };
   
 Panel.prototype.createEquipment = function(index) {
@@ -50,10 +85,9 @@ Panel.prototype.createEquipment = function(index) {
   var equipment = new Equipment(Panel.canvas, item, {});
       
   equipment.id = Panel.equipments.length;
+  equipment.class = index;
   
-  equipment.class = Panel.classes.length;
-  
-  equipment.show("1");
+  //equipment.class = Panel.classes.length;
   
   Panel.equipments.push(equipment);
 };
@@ -131,9 +165,11 @@ Panel.prototype.drawButtons = function() {
   
   this.buttons[2].click(function() {
     
-    //console.log(JSON.stringify(Answer.output(Panel.equipments)));
+    console.log(JSON.stringify(Answer.output(Panel.equipments)));
     
     var mark = new Mark();
+    
+    $('#markModal').modal('toggle');
   });
   
   this.buttons[3].click(function() {

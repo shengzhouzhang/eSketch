@@ -1,4 +1,6 @@
-function Link(canvas, options) {
+function Link(canvas, options, equipment) {
+  
+  Element.call(this);
   
   Link.canvas = canvas;
   this.type = "link";
@@ -12,6 +14,7 @@ function Link(canvas, options) {
   this.hooking = false;
   this.source = null;
   this.target = null;
+  this.equipment = equipment;
   
   if (options.radius) {
     
@@ -57,8 +60,10 @@ function Link(canvas, options) {
   
   if (this.layer === undefined)
     this.element.hide();
-  
 };
+
+Link.prototype = new Element();
+Link.prototype.constructor = Link;
 
 Link.targets = [];
 

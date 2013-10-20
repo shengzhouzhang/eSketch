@@ -1,4 +1,6 @@
-function Slot(canvas, options) {
+function Slot(canvas, options, equipment) {
+  
+  Element.call(this);
   
   Slot.canvas = canvas;
   this.type = "slot";
@@ -10,6 +12,7 @@ function Slot(canvas, options) {
   this.height = options.height;
   this.text = options.text;
   this.opacity = options.opacity || 1;
+  this.equipment = equipment;
   
   this.element = Slot.canvas.rect(this.x, this.y, this.width, this.height, 3).attr({"stroke-dasharray": "--", fill: "white", "fill-opacity": 0.3}).hide();
   
@@ -48,6 +51,9 @@ function Slot(canvas, options) {
     
   });
 };
+
+Slot.prototype = new Element();
+Slot.prototype.constructor = Slot;
 
 Slot.prototype.show = function() {
   

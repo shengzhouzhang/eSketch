@@ -1,5 +1,8 @@
 function Equipment(canvas, options) {
   
+  // Inherit from Element
+  Element.call(this);
+  
   Equipment.canvas = canvas;
   this.type = "equipment";
   this.name = options.name;
@@ -17,35 +20,16 @@ function Equipment(canvas, options) {
   this.anchors = [];
   this.slots = [];
   this.links = [];
+  this.component;
   this.status = Equipment.StatusList.Normal;
   
-  var obj = this;
-  
-  this.set = this.draw(options);
-  
-  this.transform = this.applyTransform();
-  this.transform.drawHandles();
-  this.transform.hideHandles();
-  
-  if (options.components) {
-    this.drawComponent(options);
-  }
-  
-  if (this.layer === undefined)
-    this.element.hide();
-  
-  // click event mouse down
-  this.element.mousedown(function() {
-    
-    if (Equipment.ActivitedEquipment)
-      Equipment.ActivitedEquipment.deactivate();
-      
-    obj.activite();
-  });
-  
-  this.scale({x: 0.7, y: 0.7});
+  this.render(options);
+
   this.save();
 };
+
+Equipment.prototype = new Element();
+Equipment.prototype.constructor = Equipment;
 
 Equipment.isLinked = function(equipment_1, equipment_2) {
   
@@ -85,11 +69,36 @@ Equipment.ActivitedEquipment = null;
  * Equipment's methods
  * ***********************
  */
-
+Equipment.prototype.render = function(options) {
+  
+  var equipment = this;
+  
+  this.draw(options);
+  
+  this.transform = this.applyTransform();
+  this.transform.drawHandles();
+  this.transform.hideHandles();
+  
+  if (options.components)
+    this.drawComponent(options.components);
+  
+  // click event mouse down
+  this.element.mousedown(function() {
+    
+    if (Equipment.ActivitedEquipment)
+      Equipment.ActivitedEquipment.deactivate();
+    
+    equipment.activite();
+  });
+  
+  this.scale({x: 0.7, y: 0.7});
+  
+  this.show(Panel.layer);
+};
 // draw equipment, anchors, and slots
 Equipment.prototype.draw = function(options) {
   
-  var obj = this;
+  var equipment = this;
   
   var set = Equipment.canvas.set();
     
@@ -102,11 +111,11 @@ Equipment.prototype.draw = function(options) {
     
     options.anchors.forEach(function(anchor) {
       
-      var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: anchor.x + obj.x, y: anchor.y + obj.y, radius: anchor.radius, opacity: anchor.opacity, equipment: obj, hidden: anchor.hidden, color: anchor.color});
+      var anchor = new Anchor(Equipment.canvas, anchor, equipment);
       
-      anchor.id = obj.anchors.length;
+      anchor.id = equipment.anchors.length;
  
-      obj.anchors.push(anchor);
+      equipment.anchors.push(anchor);
       set.push(anchor.element);
     });
   }
@@ -115,12 +124,12 @@ Equipment.prototype.draw = function(options) {
   if (options.links) {
     
     options.links.forEach(function(link) {
-    
-      var link = new Link(Equipment.canvas, {layer: link.layer, x: obj.x + link.x, y: obj.y + link.y, width: link.width, height: link.height, radius: link.radius, location: link.location});
       
-      link.id = obj.links.length;
+      var link = new Link(Equipment.canvas, link, equipment);
+      
+      link.id = equipment.links.length;
       link.element.dragable = false;
-      obj.links.push(link);
+      equipment.links.push(link);
       set.push(link.element);
     });
   }
@@ -130,11 +139,11 @@ Equipment.prototype.draw = function(options) {
     
     options.slots.forEach(function(slot) {
       
-      var slot = new Slot(Equipment.canvas, {layer: slot.layer, x: obj.x + slot.x, y: obj.y + slot.y, width: slot.width, height: slot.height, text: slot.text});
+      var slot = new Slot(Equipment.canvas, slot, equipment);
       
-      slot.id = obj.slots.length;
+      slot.id = equipment.slots.length;
       
-      obj.slots.push(slot);
+      equipment.slots.push(slot);
       set.push(slot.element);
       
       if (slot.textElement)
@@ -142,171 +151,30 @@ Equipment.prototype.draw = function(options) {
       
     });
   }
-  
-  return set;
+    
+  this.set = set;
 };
 
-Equipment.prototype.drawComponent = function(options) {
+Equipment.prototype.drawComponent = function(components) {
   
-  var obj = this;
+  var equipment = this;
   
-  var sets = [];
-  
-  for (var i = 0; i < options.components.length; i++) {
-    
-    var component = options.components[i];
-    
-    var set = Equipment.canvas.set();
-    
-    var element = Equipment.canvas.image(component.url, this.x + component.x, this.y + component.y, component.width, component.length);
-    
-    set.push(element);
-    
-    if (component.anchors) {
-      
-      component.anchors.forEach(function(anchor) {
-        
-        //console.log(anchor.color);
-        
-        var anchor = new Anchor(Equipment.canvas, {layer: anchor.layer, x: obj.x +  anchor.x + component.x, y: obj.y + anchor.y + component.y, radius: anchor.radius, opacity: anchor.opacity, equipment: obj, color: anchor.color});
-        
-        anchor.id = obj.anchors.length;
-        
-        obj.anchors.push(anchor);
-        set.push(anchor.element);
-      });
-    }
-    
-    sets.push(set);
-  }
-  
-  this.components = {};
- 
-  this.components.set = sets[0];
-  this.components.transform = new Transform(Equipment.canvas,{set: this.components.set}, function(transform, event) {
-
-    //
-    console.log(event.name);
+  components.forEach(function(component) {
+    equipment.component = new Component(Equipment.canvas, component, equipment);
   });
   
-  this.components.transform.handles = this.transform.handles;
-  this.components.transform.center = this.transform.center;
-  
-  var ox;
-  
-  var maxX = this.components.set[0].attr("x") + this.width * 0.15;
-  var minX = this.components.set[0].attr("x") - this.width * 0.45;
-  var cx, cx2;
-  
-  //
-  this.components.set[0].drag(function(dx, dy, x, y) {
-    
-    var sign = 1;
-    
-    if (obj.transform.history) {
-      
-      var history = obj.transform.history.toTransformString();
-      
-      if (history.indexOf("r") !== -1) {
-        
-        var degree = history.substring(history.indexOf("r"));
-        
-        degree = degree.substring(1, degree.indexOf(","));
-        
-        degree = degree % 360;
-        
-        if (degree > 90 && degree < 270)
-          sign = -1;
-      }
-    }
-    
-    cx = ox + dx * sign;
-    cx2 = ox2 + dx * sign;
-    
-    if (cx > minX && cx < maxX) {
-      
-      this.attr({x: cx});
-      obj.components.set[1].attr({cx: cx2});
-    }
-    
-    obj.checkHiddenPoint();
-    
-  }, function(x, y) {
-  
-    ox = this.attr("x");
-    ox2 = obj.components.set[1].attr("cx");
-    
-  }, function() {
-  
-  });
-  
-  this.set.forEach(function(element) {
-  
-    element.toFront();
-  });
+  // make main element at front
+  this.set.toFront();
 };
 
-Equipment.prototype.checkHiddenPoint = function() {
-  
-  var obj = this;
-  
-  var point_x_1, point_y_1, point_x_2, point_y_2, radius = 5;
-  
-  var show = false;
-  
-  var hiddenPoints = [], show = [false, false, false];
-  
-  Panel.equipments.forEach(function(equipment) {
-    
-    
-    if (equipment.url === "images/sample_3_1.png") {
-      
-      hiddenPoints.push(equipment.anchors[1]);
-    }
-  });
-  
-  Panel.equipments.forEach(function(equipment) {
-    
-    equipment.anchors.forEach(function(anchor) {
-      
-      var i;
-      
-      for (i = 0; i < hiddenPoints.length; i++) {
-        
-        point_x_1 = hiddenPoints[i].positionX();
-        point_y_1 = hiddenPoints[i].positionY();
-        
-        if (anchor.status === Anchor.StatusList.Normal && anchor !== hiddenPoints[i]) {
-          
-          // check distance
-          point_x_2 = anchor.positionX();
-          point_y_2 = anchor.positionY();
-          
-          if (Math.abs(point_x_1 - point_x_2) < radius && 
-              Math.abs(point_y_1 - point_y_2) < radius) {
-            
-            show[i] = true;
-          }
-        }
-      };
-    });
-  });
-  
-  for (i = 0; i < hiddenPoints.length; i++) {
-    
-    if (show[i])
-      hiddenPoints[i].element.show();
-    else
-      hiddenPoints[i].element.hide();
-  }
-};
 
 Equipment.prototype.applyTransform = function() {
   
-  var obj = this;
+  var equipment = this;
   
   var transform = new Transform(Equipment.canvas, {set: this.set}, function(transform, event) {
     
+    //console.log(event.name);
     switch (event.name) {
 
       case "drag start":
@@ -315,17 +183,17 @@ Equipment.prototype.applyTransform = function() {
         
         Anchor.ActiviteMagnet("drag");
         
-        obj.links.forEach(function(link) {
+        equipment.links.forEach(function(link) {
           
           link.updateHooked();
         });
         
         // update components
-        if (obj.components)
-          obj.components.transform.translate({dx: event.dx, dy: event.dy});
+        if (equipment.component)
+          equipment.component.translate({dx: event.dx, dy: event.dy});
         
         
-        obj.executeLinked([obj], function(equipment, link) {
+        equipment.executeLinked([equipment], function(equipment, link) {
           
           if (link.linked.length > 0) {
             
@@ -339,9 +207,9 @@ Equipment.prototype.applyTransform = function() {
         break;
       case "drag end":
         
-        obj.save();
+        equipment.save();
         
-        obj.executeLinked([obj], function(equipment) {
+        equipment.executeLinked([equipment], function(equipment) {
           
           equipment.save();
           
@@ -358,16 +226,16 @@ Equipment.prototype.applyTransform = function() {
         
         Anchor.ActiviteMagnet("rotate");
         
-        if (obj.components) {
+        if (equipment.component) {
           
-          obj.components.transform.rotate({
+          equipment.component.rotate({
             degree: event.degree,
             x: event.centerX, 
             y: event.centerY
           });
         }
         
-        obj.executeLinkedbyGrade([obj], function(equipment) {
+        equipment.executeLinkedbyGrade([equipment], function(equipment) {
           
           equipment.rotate({
             degree: event.degree,
@@ -380,7 +248,7 @@ Equipment.prototype.applyTransform = function() {
           Anchor.Break(anchor);
         });
         
-        obj.links.forEach(function(link) {
+        equipment.links.forEach(function(link) {
         
           link.updateHooked();
         });
@@ -388,9 +256,9 @@ Equipment.prototype.applyTransform = function() {
         break;
       case "rotate end":
         
-        obj.save();
+        equipment.save();
         
-        obj.executeLinkedbyGrade([obj], function(equipment) {
+        equipment.executeLinkedbyGrade([equipment], function(equipment) {
           
           equipment.save();
           
@@ -405,16 +273,16 @@ Equipment.prototype.applyTransform = function() {
         break;
       case "scale":
         
-        if (obj.components) {
+        if (equipment.component) {
           
-          obj.components.transform.scale({
+          equipment.component.scale({
             x: event.scale.x, 
             y: event.scale.y
           });
         }
         
         // update linked equipment's position
-        obj.executeLinked([obj], function(equipment, link) {
+        equipment.executeLinked([equipment], function(equipment, link) {
             
           if (link.linked.length > 0) {
             
@@ -428,9 +296,9 @@ Equipment.prototype.applyTransform = function() {
         break;
       case "scale end":
         
-        obj.save();
+        equipment.save();
         
-        obj.executeLinked([obj], function(equipment) {
+        equipment.executeLinked([equipment], function(equipment) {
           
           equipment.save();
           
@@ -442,7 +310,7 @@ Equipment.prototype.applyTransform = function() {
         break;
     }
     
-    obj.checkHiddenPoint();
+    equipment.checkHiddenPoint();
   });
   
   return transform;
@@ -548,13 +416,13 @@ Equipment.prototype.findLargestGrade = function() {
 Equipment.prototype.updateCenter = function() {
   
   var max = -1;
-  var obj = this;
+  var equipment = this;
   var center;
   
   // find the rotate center
-  obj.anchors.forEach(function(anchor) {
+  equipment.anchors.forEach(function(anchor) {
     
-    if (anchor.linked.length !== 0 && anchor.linked[0].equipment.grade <= obj.grade) {
+    if (anchor.linked.length !== 0 && anchor.linked[0].equipment.grade <= equipment.grade) {
       
       if (max === -1 || 
           anchor.linked[0].equipment.grade < max) {
@@ -566,38 +434,38 @@ Equipment.prototype.updateCenter = function() {
   });
           
   if (center !== undefined && 
-      ((obj.center === undefined || obj.center === null) || obj.grade > center.equipment.grade))
-    obj.center = center;
+      ((equipment.center === undefined || equipment.center === null) || equipment.grade > center.equipment.grade))
+    equipment.center = center;
   
-  if (obj.center !== undefined && obj.center !== null)
-    obj.transform.moveCenter({
-      x: obj.center.positionX(),
-      y: obj.center.positionY()
+  if (equipment.center !== undefined && equipment.center !== null)
+    equipment.transform.moveCenter({
+      x: equipment.center.positionX(),
+      y: equipment.center.positionY()
     });
 };
 
 Equipment.prototype.translate = function (options) {
   
+  var move;
+  
   if (options.x !== undefined && options.y !== undefined) {
     
-    this.transform.translate({x: options.x, y: options.y});
+    move = this.transform.translate({x: options.x, y: options.y});
     
-    if (this.components) {
-      
-      this.components.transform.translate({x: options.x, y: options.y});
-      //this.checkHiddenPoint();
+    if (this.component) {
+      this.component.translate({x: options.x, y: options.y});
     }
     
   } else if (options.dx !== undefined && options.dy !== undefined) {
     
-    var move = this.transform.translate({dx: options.dx, dy: options.dy});
+    move = this.transform.translate({dx: options.dx, dy: options.dy});
     
-    if (this.components) {
-      
-      this.components.transform.translate({dx: move.dx, dy: move.dy});
-      //this.checkHiddenPoint();
+    if (this.component) {
+      this.component.translate({dx: move.dx, dy: move.dy});
     }
   }
+  
+  return move;
 };
 
 Equipment.prototype.rotate = function (options) {
@@ -610,16 +478,12 @@ Equipment.prototype.rotate = function (options) {
     }
   });
   
-  if (this.components) {
-    this.components.transform.rotate({
+  if (this.component) {
+    this.component.rotate({
       degree: options.degree,
-      center: {
-        x: options.x, 
-        y: options.y
-      }
+      x: options.x, 
+      y: options.y
     });
-  
-    //this.checkHiddenPoint();
   }
 };
 
@@ -630,14 +494,12 @@ Equipment.prototype.scale = function (options) {
     y: options.y
   });
   
-  if (this.components) {
+  if (this.component) {
     
-    this.components.transform.scale({
+    this.component.scale({
       x: options.x,
       y: options.y
     });
-  
-    //this.checkHiddenPoint();
   }
 };
 
@@ -645,42 +507,48 @@ Equipment.prototype.show = function(layer) {
   
   if (this.layer != layer) {
    
-   // hide everything
+    // hide everything
     this.element.hide();
-    
-    if (this.components)
-      this.components.set[0].hide();
-    
-  } else {
-   
-    this.element.show();
-    if (this.components)
-      this.components.set[0].show();
     
     this.anchors.forEach(function(anchor) {
       
       if (anchor.layer != layer)
-        anchor.element.hide();
+        anchor.hide();
       else
-        anchor.element.show();
+        anchor.show();
+    });
+    
+  } else {
+   
+    this.element.show();
+    
+    this.anchors.forEach(function(anchor) {
+      
+      if (anchor.layer != layer)
+        anchor.hide();
+      else
+        anchor.show();
     });
     
     this.slots.forEach(function(slot) {
       
       if (slot.layer != layer)
-        slot.element.hide();
+        slot.hide();
       else
-        slot.element.show();
+        slot.show();
     });
     
     this.links.forEach(function(link) {
     
       if (link.layer != layer)
-        link.element.hide();
+        link.hide();
       else
-        link.element.show();
+        link.show();
     });
   }
+  
+  if (this.component)
+      this.component.show(layer);
 };
 
 Equipment.prototype.fadeOut = function() {
@@ -689,8 +557,8 @@ Equipment.prototype.fadeOut = function() {
   
   this.element.attr({opacity: .5});
   
-  if (this.components)
-    this.components.set[0].attr({opacity: .5});
+  if (this.component)
+    this.component.fadeOut();
 };
 
 Equipment.prototype.fadeIn = function() {
@@ -699,8 +567,8 @@ Equipment.prototype.fadeIn = function() {
   
   this.element.attr({opacity: 1});
   
-  if (this.components)
-    this.components.set[0].attr({opacity: 1});
+  if (this.component)
+    this.component.fadeIn();
 };
 
 Equipment.prototype.transformString = function() {
@@ -711,11 +579,67 @@ Equipment.prototype.transformString = function() {
     return ""; 
 };
 
+
+Equipment.prototype.checkHiddenPoint = function() {
+  
+  var equipment = this;
+  
+  var point_x_1, point_y_1, point_x_2, point_y_2, radius = 5;
+  
+  var show = false;
+  
+  var hiddenPoints = [], show = [false, false, false];
+  
+  Panel.equipments.forEach(function(equipment) {
+    
+    
+    if (equipment.url === "images/sample_3_1.png") {
+      
+      hiddenPoints.push(equipment.anchors[1]);
+    }
+  });
+  
+  Panel.equipments.forEach(function(equipment) {
+    
+    equipment.anchors.forEach(function(anchor) {
+      
+      var i;
+      
+      for (i = 0; i < hiddenPoints.length; i++) {
+        
+        point_x_1 = hiddenPoints[i].positionX();
+        point_y_1 = hiddenPoints[i].positionY();
+        
+        if (anchor.status === Anchor.StatusList.Normal && anchor !== hiddenPoints[i]) {
+          
+          // check distance
+          point_x_2 = anchor.positionX();
+          point_y_2 = anchor.positionY();
+          
+          if (Math.abs(point_x_1 - point_x_2) < radius && 
+              Math.abs(point_y_1 - point_y_2) < radius) {
+            
+            show[i] = true;
+          }
+        }
+      };
+    });
+  });
+  
+  for (i = 0; i < hiddenPoints.length; i++) {
+    
+    if (show[i])
+      hiddenPoints[i].show();
+    else
+      hiddenPoints[i].hide();
+  }
+};
+
 Equipment.prototype.save = function() {
   
   this.transform.transformDone();
   
-  if (this.components)
-    this.components.transform.transformDone();
+  if (this.component)
+    this.component.transform.transformDone();
 };
 

@@ -1,4 +1,6 @@
-function Anchor(canvas, options) {
+function Anchor(canvas, options, equipment) {
+  
+  Element.call(this);
   
   Anchor.canvas = canvas;
   this.type = "anchor";
@@ -8,7 +10,7 @@ function Anchor(canvas, options) {
   this.y = options.y;
   this.opacity = options.opacity || 1;
   this.radius = options.radius || 4;
-  this.equipment = options.equipment;
+  this.equipment = equipment;
   this.linked = [];
   this.hidden = options.hidden;
   var obj = this;
@@ -28,7 +30,7 @@ function Anchor(canvas, options) {
     
   } else {
   
-    this.element.click(function(){
+    this.element.click(function() {
       
       if (obj.status === Anchor.StatusList.Normal)
         obj.activite();
@@ -37,6 +39,9 @@ function Anchor(canvas, options) {
     });
   }
 };
+
+Anchor.prototype = new Element();
+Anchor.prototype.constructor = Anchor;
 
 /*
 * ***********************

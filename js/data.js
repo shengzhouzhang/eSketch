@@ -24,44 +24,15 @@ var equipmentsData = [
     {layer: 2, x: 40, y: 20, width: 5, height: 10},
     {layer: 2, x: 130, y: 20, width: 5, height: 10}
   ], components: [
-    {layer: 1, url: "images/sample_3_2.png", width: 150, length: 20, x: -40, y:5, anchors: [
-      {x: 10, y: 10, radius: 4, color: "orange"}
+    {layer: 1, url: "images/sample_3_2.png", width: 150, height: 20, x: -40, y:5, anchors: [
+      {layer: 1, x: 10, y: 10, radius: 4, color: "orange"}
     ]},
   ], grade: 5,
     youtube: "http://youtu.be/kS986THGE24",
     wikipedia: "http://en.wikipedia.org/wiki/Hydraulic_cylinder"
   },
-  {type: "equipment", name: "Cylinder", layer: 1, url: "images/sample_3_1.png", x: 150, y: 130, width: 150, length: 30, anchors: [
-    {layer: 1, x: 140, y: 15, radius: 4}
-  ], links: [
-    {layer: 2, x: 40, y: 20, width: 5, height: 10},
-    {layer: 2, x: 130, y: 20, width: 5, height: 10}
-  ], components: [
-    {layer: 1, url: "images/sample_3_2.png", width: 150, length: 20, x: -40, y:5, anchors: [
-      {x: 10, y: 10, radius: 4, color: "orange"}
-    ]},
-  ], grade: 5,
-    youtube: "http://youtu.be/kS986THGE24",
-    wikipedia: "http://en.wikipedia.org/wiki/Hydraulic_cylinder"
-  },
-  {type: "equipment", name: "Cylinder", layer: 1, url: "images/sample_3_1.png", x: 180, y: 160, width: 150, length: 30, anchors: [
-    {layer: 1, x: 140, y: 15, radius: 4}
-  ], links: [
-    {layer: 2, x: 40, y: 20, width: 5, height: 10},
-    {layer: 2, x: 130, y: 20, width: 5, height: 10}
-  ], components: [
-    {layer: 1, url: "images/sample_3_2.png", width: 150, length: 20, x: -40, y:5, anchors: [
-      {x: 10, y: 10, radius: 4, color: "orange"}
-    ]},
-  ], grade: 5,
-    youtube: "http://youtu.be/kS986THGE24",
-    wikipedia: "http://en.wikipedia.org/wiki/Hydraulic_cylinder"
-  },
-  {type: "equipment", name: "", layer: 1, url: "images/sample_4.png", x: 370, y: 300, width: 60, length: 50, anchors: [
-    {x: 10, y: 41, radius: 4}
-  ], grade: 6},
-  {type: "equipment", name: "", layer: 1, url: "images/sample_4.png", x: 420, y: 300, width: 60, length: 50, anchors: [
-    {x: 10, y: 41, radius: 4}
+  {type: "equipment", name: "Link", layer: 1, url: "images/sample_4.png", x: 370, y: 300, width: 60, length: 50, anchors: [
+    {layer: 1, x: 10, y: 41, radius: 4}
   ], grade: 6},
   {type: "equipment", name: "Bucket", layer: 1, url: "images/sample_5.png", x: 10, y: 420, width: 150, length: 170, anchors: [
     {layer: 1, x: 50, y: 157, radius: 4},
@@ -116,4 +87,17 @@ var equipmentsData = [
    youtube: "http://youtu.be/vY_bguSNgSc",
    wikipedia: "http://en.wikipedia.org/wiki/Directional_control_valve"
   }
+  /*{type: "equipment", name: "Pipe 2", layer: 1, url: "images/sample_10.png", x: 100, y: 500, width: 120, length:50, links: [
+    {layer: 1, x: 55, y: -5, width: 5, height: 10}
+  ], grade: 9,
+   youtube: "http://youtu.be/vY_bguSNgSc",
+   wikipedia: "http://en.wikipedia.org/wiki/Directional_control_valve"
+  },
+  {type: "equipment", name: "Pipe 3", layer: 1, url: "images/sample_10.png", x: 100, y: 500, width: 120, length:50, links: [
+    {layer: 1, x: 55, y: -5, width: 5, height: 10}
+  ], grade: 9,
+   youtube: "http://youtu.be/vY_bguSNgSc",
+   wikipedia: "http://en.wikipedia.org/wiki/Directional_control_valve"
+  }*/
 ];
+

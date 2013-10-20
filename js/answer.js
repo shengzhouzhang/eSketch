@@ -16,13 +16,13 @@ Answer.output = function(equipments) {
     if (equipment.type === "equipment") {
       
       object = {
-        id: equipment.id,
+        class: equipment.class,
         type: equipment.url,
         transform: equipment.transformString()
       };
       
-      if (equipment.components)
-        object.components = equipment.components.set[0].matrix.toTransformString();
+      if (equipment.component)
+        object.component = equipment.component.element.matrix.toTransformString();
       
       answer.objects.push(object);
   }
@@ -51,10 +51,6 @@ Answer.output = function(equipments) {
         point_2_y = anchor.equipment.transform.center.objectY();
         point_3_x = link.equipment.transform.center.objectX();
         point_3_y = link.equipment.transform.center.objectY();
-        
-        //Panel.canvas(point_1_x, point_1_y, 10);
-        //Panel.canvas(point_2_x, point_2_y, 10);
-        //Panel.canvas(point_3_x, point_3_y, 10);
         
         angle = Raphael.angle(point_2_x, point_2_y, 
                             point_3_x, point_3_y,
