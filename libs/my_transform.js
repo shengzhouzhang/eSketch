@@ -561,7 +561,7 @@ Transform.prototype.showHandles = function() {
     switch(type) {
       
       case "center":
-        this.handles[type].show();
+        //this.handles[type].show();
         break;
       case "handle":
         //this.handles[type].line.show();

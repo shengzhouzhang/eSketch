@@ -20,6 +20,7 @@ function Equipment(canvas, options) {
   this.anchors = [];
   this.slots = [];
   this.links = [];
+  this.lines = [];
   this.component;
   this.status = Equipment.StatusList.Normal;
   
@@ -50,7 +51,8 @@ Equipment.saveAll = function() {
   
   Panel.equipments.forEach(function(equipment) {
     
-    equipment.save();
+    if (equipment.removed != true)
+      equipment.save();
   });
 }
 
@@ -106,6 +108,17 @@ Equipment.prototype.draw = function(options) {
   
   set.push(this.element);
   
+  if (options.lines) {
+    
+    options.lines.forEach(function(line) {
+    
+      var line = new Line(Equipment.canvas, line, equipment);
+      
+      equipment.lines.push(line);
+      set.push(line.element);
+    });
+  }
+  
   // draw anchors
   if (options.anchors) {
     
@@ -151,6 +164,8 @@ Equipment.prototype.draw = function(options) {
       
     });
   }
+  
+  
     
   this.set = set;
 };
@@ -183,11 +198,6 @@ Equipment.prototype.applyTransform = function() {
         
         Anchor.ActiviteMagnet("drag");
         
-        equipment.links.forEach(function(link) {
-          
-          link.updateHooked();
-        });
-        
         // update components
         if (equipment.component)
           equipment.component.translate({dx: event.dx, dy: event.dy});
@@ -196,7 +206,7 @@ Equipment.prototype.applyTransform = function() {
         equipment.executeLinked([equipment], function(equipment, link) {
           
           if (link.linked.length > 0) {
-            
+
             link.linked[0].equipment.translate({
               x: link.positionX() + link.linked[0].distanceX(), 
               y: link.positionY() + link.linked[0].distanceY()
@@ -505,47 +515,43 @@ Equipment.prototype.scale = function (options) {
 
 Equipment.prototype.show = function(layer) {
   
-  if (this.layer != layer) {
-   
-    // hide everything
+  if (this.layer != layer)
     this.element.hide();
-    
-    this.anchors.forEach(function(anchor) {
-      
-      if (anchor.layer != layer)
-        anchor.hide();
-      else
-        anchor.show();
-    });
-    
-  } else {
-   
+  else
     this.element.show();
+  
+  //console.log(this.lines);
+  this.lines.forEach(function(line) {
     
-    this.anchors.forEach(function(anchor) {
-      
-      if (anchor.layer != layer)
-        anchor.hide();
-      else
-        anchor.show();
-    });
+    if (line.layer != layer)
+      line.hide();
+    else
+      line.show();
+  });
+  
+  this.anchors.forEach(function(anchor) {
     
-    this.slots.forEach(function(slot) {
-      
-      if (slot.layer != layer)
-        slot.hide();
-      else
-        slot.show();
-    });
+    if (anchor.layer != layer)
+      anchor.hide();
+    else
+      anchor.show();
+  });
+  
+  this.slots.forEach(function(slot) {
     
-    this.links.forEach(function(link) {
+    if (slot.layer != layer)
+      slot.hide();
+    else
+      slot.show();
+  });
+  
+  this.links.forEach(function(link) {
     
-      if (link.layer != layer)
-        link.hide();
-      else
-        link.show();
-    });
-  }
+    if (link.layer != layer)
+      link.hide();
+    else
+      link.show();
+  });
   
   if (this.component)
       this.component.show(layer);
@@ -592,8 +598,7 @@ Equipment.prototype.checkHiddenPoint = function() {
   
   Panel.equipments.forEach(function(equipment) {
     
-    
-    if (equipment.url === "images/sample_3_1.png") {
+    if (equipment.url === "images/sample_3_1.png" && equipment.removed != true) {
       
       hiddenPoints.push(equipment.anchors[1]);
     }
@@ -601,29 +606,30 @@ Equipment.prototype.checkHiddenPoint = function() {
   
   Panel.equipments.forEach(function(equipment) {
     
-    equipment.anchors.forEach(function(anchor) {
-      
-      var i;
-      
-      for (i = 0; i < hiddenPoints.length; i++) {
+    if (equipment.removed != true)
+      equipment.anchors.forEach(function(anchor) {
         
-        point_x_1 = hiddenPoints[i].positionX();
-        point_y_1 = hiddenPoints[i].positionY();
+        var i;
         
-        if (anchor.status === Anchor.StatusList.Normal && anchor !== hiddenPoints[i]) {
+        for (i = 0; i < hiddenPoints.length; i++) {
           
-          // check distance
-          point_x_2 = anchor.positionX();
-          point_y_2 = anchor.positionY();
+          point_x_1 = hiddenPoints[i].positionX();
+          point_y_1 = hiddenPoints[i].positionY();
           
-          if (Math.abs(point_x_1 - point_x_2) < radius && 
-              Math.abs(point_y_1 - point_y_2) < radius) {
+          if (anchor.status === Anchor.StatusList.Normal && anchor !== hiddenPoints[i]) {
             
-            show[i] = true;
+            // check distance
+            point_x_2 = anchor.positionX();
+            point_y_2 = anchor.positionY();
+            
+            if (Math.abs(point_x_1 - point_x_2) < radius && 
+                Math.abs(point_y_1 - point_y_2) < radius) {
+              
+              show[i] = true;
+            }
           }
-        }
-      };
-    });
+        };
+      });
   });
   
   for (i = 0; i < hiddenPoints.length; i++) {

@@ -1,5 +1,5 @@
 var equipmentsData = [
-  {type: "equipment", name: "Stick", layer: 1, url: "images/sample_1.png", x: 10, y: 280, width: 350, length: 90, anchors: [
+  {type: "equipment", name: "Boom", layer: 1, url: "images/sample_1.png", x: 10, y: 280, width: 350, length: 90, anchors: [
     {layer: 1, x: 8, y: 82, radius: 4},
     {layer: 1, x: 180, y: 15, radius: 4},
     {layer: 1, x: 135, y: 7, radius: 4},
@@ -8,7 +8,7 @@ var equipmentsData = [
    youtube: "http://www.youtube.com/watch?v=u6QIpXca9D4",
    wikipedia: "http://en.wikipedia.org/wiki/Backhoe"
   },
-  {type: "equipment", name: "Boom", layer: 1, url: "images/sample_2.png", x: 180, y: 430, width: 300, length: 80, anchors: [
+  {type: "equipment", name: "Stick", layer: 1, url: "images/sample_2.png", x: 180, y: 430, width: 300, length: 80, anchors: [
     {layer: 1, x: 9, y: 71, radius: 4},
     {layer: 1, x: 45, y: 66, radius: 4},
     {layer: 1, x: 223, y: 65, radius: 5},
@@ -36,9 +36,8 @@ var equipmentsData = [
   ], grade: 6},
   {type: "equipment", name: "Bucket", layer: 1, url: "images/sample_5.png", x: 10, y: 420, width: 150, length: 170, anchors: [
     {layer: 1, x: 50, y: 157, radius: 4},
-    {layer: 1, x: 95, y: 147, radius: 4}
-  ], links: [
-    {layer: 1, x: 145, y: 75, width: 10, height: 5}
+    {layer: 1, x: 95, y: 147, radius: 4},
+    {layer: 1, x: 150, y: 75, radius: 5}
   ], grade: 4,
    youtube: "http://youtu.be/MCc6eK56afw",
    wikipedia: "http://en.wikipedia.org/wiki/Bucket_%28machine_component%29"
@@ -81,8 +80,27 @@ var equipmentsData = [
     youtube: "http://youtu.be/vY_bguSNgSc",
     wikipedia: "http://en.wikipedia.org/wiki/Directional_control_valve"
   },
-  {type: "equipment", name: "Pipe", layer: 1, url: "images/sample_10.png", x: 100, y: 500, width: 120, length:50, links: [
-    {layer: 1, x: 55, y: -5, width: 5, height: 10}
+  {type: "equipment", name: "Pipe 1", layer: 1, url: "images/sample_10.png", x: 100, y: 500, width: 120, length:50, lines: [
+    {layer: 1, path: [["M", 30, 50],["L", 60, -40]]},
+    {layer: 1, path: [["M", 90, 50],["L", 60, -40]]}
+  ], anchors: [
+    {layer: 1, x: 60, y: -40, radius: 5}
+  ], grade: 9,
+   youtube: "http://youtu.be/vY_bguSNgSc",
+   wikipedia: "http://en.wikipedia.org/wiki/Directional_control_valve"
+  },
+  {type: "equipment", name: "Pipe 2", layer: 1, url: "images/sample_10.png", x: 100, y: 500, width: 120, length:50, lines: [
+    {layer: 1, path: [["M", 60, 50],["L", 60, -40]]}
+  ], anchors: [
+    {layer: 1, x: 60, y: -40, radius: 5}
+  ], grade: 9,
+   youtube: "http://youtu.be/vY_bguSNgSc",
+   wikipedia: "http://en.wikipedia.org/wiki/Directional_control_valve"
+  },
+  {type: "equipment", name: "Pipe 3", layer: 1, url: "images/sample_10.png", x: 100, y: 500, width: 120, length:50, lines: [
+    {layer: 1, path: [["M", 60, 0],["L", 60, -40]]}
+  ], anchors: [
+    {layer: 1, x: 60, y: -40, radius: 5}
   ], grade: 9,
    youtube: "http://youtu.be/vY_bguSNgSc",
    wikipedia: "http://en.wikipedia.org/wiki/Directional_control_valve"

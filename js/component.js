@@ -126,7 +126,7 @@ Component.prototype.translate = function (options) {
 
 Component.prototype.rotate = function (options) {
   
-  console.log(options);
+  //console.log(options);
   this.transform.rotate({
     degree: options.degree, 
     center: {

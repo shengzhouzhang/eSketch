@@ -1,6 +1,6 @@
 function Loader(panel) {
   
-  var answer = {"objects":[{"class":"5","type":"images/sample_6.png","transform":"t539.9999224480875,126.499959362106s0.7,0.7,0,0"},{"class":"6","type":"images/sample_7.png","transform":"t509.8999224480875,230.099959362106s0.7,0.7,0,0"},{"class":"0","type":"images/sample_1.png","transform":"t499.7634465901875,-38.00498319789395s0.7,0.7,0,0r30.8979,0,0"},{"class":"1","type":"images/sample_2.png","transform":"t243.7358836003876,184.13213725070602s0.7,0.7,0,0r-28.1852,0,0"},{"class":"2","type":"images/sample_3_1.png","transform":"t338.50224857616075,155.1809303964069s0.5626,0.5626,0,0r-30.0457,0,0","component":"t338.50224857616075,155.1809303964069s0.5626,0.5626,0,0r-30.0457,0,0"},{"class":"4","type":"images/sample_5.png","transform":"t582.6307226039548,359.48163245519646s0.5976,0.5976,0,0r164.7616,0,0"},{"class":"2","type":"images/sample_3_1.png","transform":"t82.5,34.5s0.7,0.7,0,0","component":"t82.5,34.5s0.7,0.7,0,0"},{"class":"2","type":"images/sample_3_1.png","transform":"t731.5563168401461,32.93637124617075s0.7,0.7,0,0r73.4925,0,0","component":"t731.5563168401461,32.93637124617075s0.7,0.7,0,0r73.4925,0,0"},{"class":"2","type":"images/sample_3_1.png","transform":"t560.9216005185727,10.715039053404258s0.4729,0.4729,0,0r34.5442,0,0","component":"t560.9216005185727,10.715039053404258s0.4729,0.4729,0,0r34.5442,0,0"},{"class":"3","type":"images/sample_4.png","transform":"t69,37.5s0.7,0.7,0,0"},{"class":"3","type":"images/sample_4.png","transform":"t374.88433935112147,365.9894133641203s0.7,0.7,0,0r261.1467,0,0"},{"class":"3","type":"images/sample_4.png","transform":"t199.53905035438586,295.0941814477013s0.7,0.7,0,0r-44.1901,0,0"}],"relationships":[[{"equipment":0,"anchor":0,"type":"images/sample_6.png"},{"equipment":7,"anchor":0,"type":"images/sample_3_1.png"},{"angle":77}],[{"equipment":0,"anchor":1,"type":"images/sample_6.png"},{"equipment":2,"anchor":3,"type":"images/sample_1.png"},{"angle":101}],[{"equipment":0,"anchor":2,"type":"images/sample_6.png"},{"equipment":1,"anchor":0,"type":"images/sample_7.png"},{"angle":210}],[{"equipment":2,"anchor":0,"type":"images/sample_1.png"},{"equipment":3,"anchor":2,"type":"images/sample_2.png"},{"angle":-152}],[{"equipment":2,"anchor":2,"type":"images/sample_1.png"},{"equipment":8,"anchor":0,"type":"images/sample_3_1.png"},{"angle":-140}],[{"equipment":3,"anchor":1,"type":"images/sample_2.png"},{"equipment":10,"anchor":0,"type":"images/sample_4.png"},{"angle":95}],[{"equipment":3,"anchor":4,"type":"images/sample_2.png"},{"equipment":4,"anchor":0,"type":"images/sample_3_1.png"},{"angle":-22}],[{"equipment":5,"anchor":1,"type":"images/sample_5.png"},{"equipment":11,"anchor":0,"type":"images/sample_4.png"},{"angle":-220}]]};
+  var answer = {"objects":[{"name":"Upper-Carriage","class":"5","type":"images/sample_6.png","transform":"t638.9999662007735,172.500007011489s0.7,0.7,0,0"},{"name":"Lower-Carriage","class":"6","type":"images/sample_7.png","transform":"t575.6796272177227,266.4186510792856s0.7949,0.7949,0,0"},{"name":"Boom","class":"0","type":"images/sample_1.png","transform":"t781.5103279399735,-80.72306752721094s0.7,0.7,0,0r60.252,0,0"},{"name":"Stick","class":"1","type":"images/sample_2.png","transform":"t447.0443027697736,-6.596676646010934s0.7,0.7,0,0"},{"name":"Bucket","class":"4","type":"images/sample_5.png","transform":"t401.0696883766463,232.05205213547165s0.6306,0.6306,0,0r-77.5336,0,0"}],"relationships":[[{"name":"Upper-Carriage","anchor":1},{"name":"Boom","anchor":3},{"angle":72,"scaleX":"1.00","scaleY":"1.00"}],[{"name":"Upper-Carriage","anchor":2},{"name":"Lower-Carriage","anchor":0},{"angle":210,"scaleX":"0.88","scaleY":"0.88"}],[{"name":"Lower-Carriage","anchor":0},{"name":"Upper-Carriage","anchor":2},{"angle":-210,"scaleX":"1.14","scaleY":"1.14"}],[{"name":"Boom","anchor":0},{"name":"Stick","anchor":2},{"angle":-151,"scaleX":"1.00","scaleY":"1.00"}],[{"name":"Boom","anchor":3},{"name":"Upper-Carriage","anchor":1},{"angle":-72,"scaleX":"1.00","scaleY":"1.00"}],[{"name":"Stick","anchor":0},{"name":"Bucket","anchor":0},{"angle":134,"scaleX":"1.11","scaleY":"1.11"}],[{"name":"Stick","anchor":2},{"name":"Boom","anchor":0},{"angle":151,"scaleX":"1.00","scaleY":"1.00"}],[{"name":"Bucket","anchor":0},{"name":"Stick","anchor":0},{"angle":-134,"scaleX":"0.90","scaleY":"0.90"}]]};
   
   (function() {
   
@@ -12,9 +12,14 @@ function Loader(panel) {
   
   var i;
   
-  for (i = 0; i < Panel.equipments.length; i++) {
+  var equipments = $.grep(Panel.equipments, function(item) {
+    
+    return item.layer == 1;
+  });
   
-    var equipment = Panel.equipments[i];
+  for (i = 0; i < equipments.length; i++) {
+  
+    var equipment = equipments[i];
     
     equipment.transform.applyTransform(answer.objects[i].transform);
     equipment.transform.resetCenter();

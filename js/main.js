@@ -6,39 +6,15 @@ $(document).ready(function() {
   
   panel.drawButtons();
   
+  var otherLayer = [];
+  
   equipmentsData.forEach(function(item) {
     
-    switch(item.type) {
-     
-      case "equipment":
-        panel.register(item);
-        break;
-      case "pipe":
-        panel.register(item);
-        break;
-      default:
-        break;
-    }
+    if (item.layer == 1)
+      panel.register(item);
+    else
+      otherLayer.push(item);
   });
-  
-  /*
-  equipmentsData.forEach(function(item) {
-    
-    switch(item.type) {
-     
-      case "equipment":
-        panel.register(new Equipment(canvas, item));
-        break;
-      case "pipe":
-        panel.register(new Pipe(canvas, item));
-        break;
-      default:
-        break;
-    }
-  });
-  */
-  
-  //Layer.switchLayer(Panel.equipments, 1);
   
   //var background = new Background(canvas, {url: "images/background.png", x: 0, y: 370, width: "110%", height: 310, components: [{layer: 1, url: "images/truck.png", x:150, y: 150, width: 200, length: 100}]});
   

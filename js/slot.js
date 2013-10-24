@@ -36,12 +36,18 @@ function Slot(canvas, options, equipment) {
       var y = (bbox.y + bbox.y2 - height) / 2;
       
       
-      if (obj.window)
+      if (obj.window) {
         obj.window.show();
-      else
+      } else {
+        
         obj.window = new Window(Slot.canvas, {x: x, y: y, width: width, height: height, radius: 5, color: "white", origin: obj});
+        
+        
+      }
       
       obj.isShowing = true;
+      
+      
     } else {
      
       obj.window.hide(); 

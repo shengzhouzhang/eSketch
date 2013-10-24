@@ -17,6 +17,14 @@ Layer.switchLayer = function(equipments, num) {
         hide(equipment);
       }
       
+      equipment.lines.forEach(function(line) {
+        
+        if (line.layer === num)
+          show(line);
+        else
+          hide(line);
+      });
+      
       equipment.anchors.forEach(function(anchor) {
         
         if (anchor.layer === num)
@@ -60,6 +68,9 @@ Layer.switchLayer = function(equipments, num) {
           case "equipment":
             item.fadeIn();
             break;
+          case "line":
+            item.fadeIn();
+            break;
           case "link":
             item.show();
             break;
@@ -74,7 +85,7 @@ Layer.switchLayer = function(equipments, num) {
       }, function(item) {
         
         switch (item.type) {
-            
+          
           case "link":
             item.hide();
             break;
@@ -110,6 +121,9 @@ Layer.switchLayer = function(equipments, num) {
         switch (item.type) {
           
           case "equipment":
+            item.fadeOut();
+            break;
+          case "line":
             item.fadeOut();
             break;
           case "link":

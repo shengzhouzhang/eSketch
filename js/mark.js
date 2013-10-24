@@ -4,16 +4,32 @@ function Mark() {
   
   console.log(JSON.stringify(answer));
   
-  var mark_sheet = {"objects":[{"id":0,"type":"images/sample_6.png","transform":"t506.0312367101001,157.51098896188068s0.7,0.7,0,0"},{"id":1,"type":"images/sample_7.png","transform":"t442.5152218685437,251.37260749376998s0.7955,0.7955,0,0"},{"id":2,"type":"images/sample_1.png","transform":"t474.9375673163935,-30.039065965940864s0.7212,0.7212,0,0r33.942,0,0"},{"id":3,"type":"images/sample_2.png","transform":"t286.35581326834387,336.3578488199473s0.6521,0.6521,0,0r-57.241,0,0"},{"id":4,"type":"images/sample_5.png","transform":"t649.0163971993558,388.77249233089015s0.6203,0.6203,0,0r162.8758,0,0"},{"id":5,"type":"images/sample_3_1.png","transform":"t315.43242060140614,306.5941342307173s0.6648,0.6648,0,0r-60.361,0,0"},{"id":6,"type":"images/sample_3_1.png","transform":"t501.6384191511935,26.100367501548746s0.5392,0.5392,0,0r28.8535,0,0"},{"id":7,"type":"images/sample_3_1.png","transform":"t705.7521095861001,64.39131576638071s0.7,0.7,0,0r75.3572,0,0"},{"id":8,"type":"images/sample_4.png","transform":"t258.0830683541621,342.3698915293471s0.7,0.7,0,0r-48.9833,0,0"},{"id":9,"type":"images/sample_4.png","transform":"t522.5564162326435,427.61853821695075s0.7,0.7,0,0r216.7537,0,0"}],"relationships":[[{"equipment":0,"anchor":0,"type":"images/sample_6.png"},{"equipment":7,"anchor":0,"type":"images/sample_3_1.png"},{"angle":76}],[{"equipment":0,"anchor":1,"type":"images/sample_6.png"},{"equipment":2,"anchor":3,"type":"images/sample_1.png"},{"angle":98}],[{"equipment":0,"anchor":2,"type":"images/sample_6.png"},{"equipment":1,"anchor":0,"type":"images/sample_7.png"},{"angle":210}],[{"equipment":2,"anchor":0,"type":"images/sample_1.png"},{"equipment":3,"anchor":2,"type":"images/sample_2.png"},{"angle":-120}],[{"equipment":2,"anchor":2,"type":"images/sample_1.png"},{"equipment":6,"anchor":0,"type":"images/sample_3_1.png"},{"angle":-131}],[{"equipment":3,"anchor":0,"type":"images/sample_2.png"},{"equipment":4,"anchor":0,"type":"images/sample_5.png"},{"angle":198}],[{"equipment":3,"anchor":1,"type":"images/sample_2.png"},{"equipment":9,"anchor":0,"type":"images/sample_4.png"},{"angle":111}],[{"equipment":3,"anchor":4,"type":"images/sample_2.png"},{"equipment":5,"anchor":0,"type":"images/sample_3_1.png"},{"angle":-21}],[{"equipment":4,"anchor":1,"type":"images/sample_5.png"},{"equipment":8,"anchor":0,"type":"images/sample_4.png"},{"angle":-217}]]};
+  var mark_sheet = {
+    "objects":[{"name":"Upper-Carriage","class":"5","type":"images/sample_6.png","transform":"t638.9999662007735,172.500007011489s0.7,0.7,0,0"},{"name":"Lower-Carriage","class":"6","type":"images/sample_7.png","transform":"t575.6796272177227,266.4186510792856s0.7949,0.7949,0,0"},{"name":"Boom","class":"0","type":"images/sample_1.png","transform":"t781.5103279399735,-80.72306752721094s0.7,0.7,0,0r60.252,0,0"},{"name":"Stick","class":"1","type":"images/sample_2.png","transform":"t447.0443027697736,-6.596676646010934s0.7,0.7,0,0"},{"name":"Bucket","class":"4","type":"images/sample_5.png","transform":"t401.0696883766463,232.05205213547165s0.6306,0.6306,0,0r-77.5336,0,0"}],
+    "relationships":[
+      [{"name":"Upper-Carriage","anchor":1},{"name":"Boom","anchor":3},
+       {"angle":72, "max": 136, "min": -2, "scaleX":"1.00","scaleY":"1.00"}],
+      [{"name":"Upper-Carriage","anchor":2},{"name":"Lower-Carriage","anchor":0},
+       {"angle":210, "max": 5, "min": -5, "scaleX":"0.88","scaleY":"0.88"}],
+      [{"name":"Boom", "anchor":0},{"name":"Stick","anchor":2},
+       {"angle":-151, "max": 125, "min": -30, "scaleX":"1.00","scaleY":"1.00"}],
+      [{"name":"Stick","anchor":0},{"name":"Bucket","anchor":0},
+       {"angle":134, "max": 150, "min": -60, "scaleX":"1.11","scaleY":"1.11"}]
+    ]
+  };
   
 
   // check relationship
   (function(criterion, answers) {
     
-    var count = 0, count_angle = 0;
+    var count = 0, count_angle = 0, correct_join, correct_angle, correct_scale;
     var i, j;
     
+    $("table.mark tbody").html("");
+    
     for (i = 0; i < criterion.length; i++) {
+      
+      correct_join = correct_angle = correct_scale = false; 
       
       for (j = 0; j < answers.length; j++) {
         
@@ -22,24 +38,26 @@ function Mark() {
              (criterion[i][1].type === answers[j][1].type &&
               criterion[i][1].anchor === answers[j][1].anchor))) {
           
-          count++;
+          correct_join = true;
           
-          //console.log(answers[j][2].angle);
-          if (Math.abs(criterion[i][2].angle - answers[j][2].angle) < 90)
-            count_angle++;
+          if (Math.abs(criterion[i][2].angle - answers[j][2].angle) < 90) {
+            correct_angle = true;
+          }
           
-          if (Math.abs(criterion[i][2].angle - answers[j][2].angle) !== 0) {
-            
-            //console.log(criterion[i][0].type + " " + criterion[i][1].type);
+          if (Math.abs(criterion[i][2].scaleX - answers[j][2].scaleX) < .05 &&
+              Math.abs(criterion[i][2].scaleY - answers[j][2].scaleY) < .05) {
+            correct_scale = true;
           }
             
           break;
         }
       };
+      
+      $("table.mark tbody").append("<tr><td>" + i + "</td><td>" + [criterion[i][0].name, criterion[i][1].name].join(" - ") + "</td><td>" + (correct_join ? "Yes" : "No") + "</td><td>" + (correct_angle ? "Yes" : "No") + "</td><td>" + (correct_scale ? "Yes" : "No") + "</td></tr>");
     };
     
-    console.log("join: " + count + " / " + criterion.length);
-    console.log("angle: " + count_angle + " / " + count);
+    //console.log("join: " + count + " / " + criterion.length);
+    //console.log("angle: " + count_angle + " / " + count);
     
     //alert(count + " / " + criterion.length);
   })(mark_sheet.relationships, answer.relationships);
@@ -58,6 +76,7 @@ function Mark() {
     return false;
   };
   
+  /*
   //check cylinder
   (function(equipments) {
     
@@ -142,50 +161,6 @@ function Mark() {
     console.log("cylinders: " + count + " / 3");
     
   })(Panel.equipments);
-  
-  
-  // check scale
-  (function(criterion, answers) {
-  
-    var i, index, count = 0;
-    var cX = 1, cY = 1;
-    var aX = 1, aY = 1;
-    var hB = .1, lB = -.05;
-    
-    for (i = 0; i < criterion.length; i++) {
-      
-      if ((index = criterion[i].transform.indexOf('s')) !== -1) {
-        
-        cX = criterion[i].transform.substring(
-          index + 1,
-          (index = criterion[i].transform.indexOf(',', index)));
-        
-        cY = criterion[i].transform.substring(
-          index + 1,
-          (index = criterion[i].transform.indexOf(',', index + 1)));
-      }
-      
-      if (answers[i] && 
-          (index = answers[i].transform.indexOf('s')) !== -1) {
-        
-        aX = answers[i].transform.substring(
-          index + 1,
-          (index = answers[i].transform.indexOf(',', index)));
-        
-        aY = answers[i].transform.substring(
-          index + 1,
-          (index = answers[i].transform.indexOf(',', index + 1)));
-      }
-      
-      if (((aX - cX) > lB && (aX - cX) < hB) && 
-          ((aY - cY) > lB && (aY - cY) < hB)) {
-        
-          count++;
-      }
-    }
-    
-    console.log("scale: " + count + " / " + criterion.length);
-    
-  })(mark_sheet.objects, answer.objects);
+  */
 };
 
