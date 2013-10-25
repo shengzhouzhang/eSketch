@@ -17,8 +17,6 @@ Answer.output = function(equipments) {
       
       object = {
         name: equipment.name,
-        class: equipment.class,
-        type: equipment.url,
         transform: equipment.transformString()
       };
       
@@ -43,9 +41,12 @@ Answer.output = function(equipments) {
             
             var relationship = answer.relationships[i];
             
-            if ((relationship[0].equipment === anchor.equipment.id &&relationship[0].anchor === anchor.id && relationship[1].equipment === link.equipment.id && relationship[1].anchor === link.id) || (relationship[1].equipment === anchor.equipment.id && relationship[1].anchor === anchor.id && relationship[0].equipment === link.equipment.id && relationship[0].anchor === link.id))
+            if ((relationship[0].id === anchor.equipment.id && relationship[0].anchor === anchor.id && 
+                 relationship[1].id === link.equipment.id && relationship[1].anchor === link.id) || 
+                (relationship[1].id === anchor.equipment.id && relationship[1].anchor === anchor.id && 
+                 relationship[0].id === link.equipment.id && relationship[0].anchor === link.id))
               return;
-                }
+          }
           
           point_1_x = anchor.positionX();
           point_1_y = anchor.positionY();
@@ -62,8 +63,8 @@ Answer.output = function(equipments) {
           var scale_2 = Answer.getScale(link.equipment.transformString());
           
           answer.relationships.push([
-            {name: anchor.equipment.name, anchor: anchor.id},
-            {name: link.equipment.name, anchor: link.id},
+            {name: anchor.equipment.name, id: anchor.equipment.id, anchor: anchor.id},
+            {name: link.equipment.name, id: link.equipment.id, anchor: link.id},
             {angle: Math.round(angle), scaleX: (scale_1.x / scale_2.x).toFixed(2), scaleY: (scale_1.y / scale_2.y).toFixed(2)}
           ]);
         });

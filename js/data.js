@@ -1,19 +1,19 @@
 var equipmentsData = [
-  {type: "equipment", name: "Boom", layer: 1, url: "images/sample_1.png", x: 10, y: 280, width: 350, length: 90, anchors: [
-    {layer: 1, x: 8, y: 82, radius: 4},
-    {layer: 1, x: 180, y: 15, radius: 4},
-    {layer: 1, x: 135, y: 7, radius: 4},
-    {layer: 1, x: 343, y: 82, radius: 4}
+  {type: "equipment", name: "Boom", layer: 1, url: "images/sample_1.png", x: 10, y: 280, width: 300, length: 70, anchors: [
+    {layer: 1, x: 8, y: 64, radius: 4},
+    {layer: 1, x: 155, y: 11.5, radius: 4},
+    {layer: 1, x: 115.5, y: 6, radius: 4},
+    {layer: 1, x: 294, y: 64, radius: 4}
   ], grade: 2,
    youtube: "http://www.youtube.com/watch?v=u6QIpXca9D4",
    wikipedia: "http://en.wikipedia.org/wiki/Backhoe"
   },
-  {type: "equipment", name: "Stick", layer: 1, url: "images/sample_2.png", x: 180, y: 430, width: 300, length: 80, anchors: [
-    {layer: 1, x: 9, y: 71, radius: 4},
-    {layer: 1, x: 45, y: 66, radius: 4},
-    {layer: 1, x: 223, y: 65, radius: 5},
-    {layer: 1, x: 290, y: 38, radius: 5},
-    {layer: 1, x: 215, y: 11, radius: 4}
+  {type: "equipment", name: "Stick", layer: 1, url: "images/sample_2.png", x: 180, y: 430, width: 175, length: 50, anchors: [
+    {layer: 1, x: 5, y: 45, radius: 3},
+    {layer: 1, x: 26, y: 43, radius: 3},
+    {layer: 1, x: 130, y: 41, radius: 3},
+    {layer: 1, x: 170, y: 25, radius: 3},
+    {layer: 1, x: 125, y: 7, radius: 3}
   ], grade: 3,
    youtube: "http://www.youtube.com/watch?v=u6QIpXca9D4",
    wikipedia: "http://en.wikipedia.org/wiki/Backhoe"
@@ -34,26 +34,26 @@ var equipmentsData = [
   {type: "equipment", name: "Link", layer: 1, url: "images/sample_4.png", x: 370, y: 300, width: 60, length: 50, anchors: [
     {layer: 1, x: 10, y: 41, radius: 4}
   ], grade: 6},
-  {type: "equipment", name: "Bucket", layer: 1, url: "images/sample_5.png", x: 10, y: 420, width: 150, length: 170, anchors: [
-    {layer: 1, x: 50, y: 157, radius: 4},
-    {layer: 1, x: 95, y: 147, radius: 4},
-    {layer: 1, x: 150, y: 75, radius: 5}
+  {type: "equipment", name: "Bucket", layer: 1, url: "images/sample_5.png", x: 10, y: 420, width: 60, length: 80, anchors: [
+    {layer: 1, x: 20, y: 74, radius: 3},
+    {layer: 1, x: 39, y: 69, radius: 3},
+    {layer: 1, x: 60, y: 40, radius: 3}
   ], grade: 4,
    youtube: "http://youtu.be/MCc6eK56afw",
    wikipedia: "http://en.wikipedia.org/wiki/Bucket_%28machine_component%29"
   },
-  {type: "equipment", name: "Upper-Carriage", layer: 1, url: "images/sample_6.png", x: 240, y: 520, width: 300, length: 150, anchors: [
-    {layer: 1, x: 60, y: 125, radius: 5, opacity: 0.5},
-    {layer: 1, x: 115, y: 100, radius: 5, opacity: 0.5},
-    {layer: 1, x: 107, y: 150, radius: 5, opacity: 0.5}
+  {type: "equipment", name: "Upper-Carriage", layer: 1, url: "images/sample_6.png", x: 240, y: 520, width: 250, length: 125, anchors: [
+    {layer: 1, x: 65, y: 105, radius: 5, opacity: 0.5},
+    {layer: 1, x: 100, y: 95, radius: 5, opacity: 0.5},
+    {layer: 1, x: 90, y: 125, radius: 5, opacity: 0.5}
   ], slots: [
     {layer: 2, x: 150, y: 52, width: 120, height: 70, opacity: 0.5, text: "Click Me"}
   ], grade: 0,
    youtube: "http://youtu.be/_y_JGA5gzss",
    wikipedia: "http://en.wikipedia.org/wiki/Continuous_track"
   },
-  {type: "equipment", name: "Lower-Carriage", layer: 1, url: "images/sample_7.png", x: 10, y: 600, width: 300, length: 70, anchors: [
-    {layer: 1, x: 150, y: 2, radius: 5, opacity: 0.5},
+  {type: "equipment", name: "Lower-Carriage", layer: 1, url: "images/sample_7.png", x: 10, y: 600, width: 250, length: 50, anchors: [
+    {layer: 1, x: 125, y: 2, radius: 5, opacity: 0.5},
   ], grade: 1,
     youtube: "http://youtu.be/21pS_Z-NCRM",
     wikipedia: "http://en.wikipedia.org/wiki/Continuous_track"

@@ -126,22 +126,11 @@ Transform.prototype.drawHandles = function() {
   
   var box = this.getBBox();
   
-  var pathStream = [];
-  pathStream.push("M");
-  pathStream.push((box.top.x + box.bottom.x) / 2);
-  pathStream.push((box.top.y + box.bottom.y) / 2);
-  pathStream.push("l");
-  pathStream.push(0);
-  pathStream.push(-Math.max((box.bottom.y - box.top.y) * 0.65, 30));
-  this.handles.handle.line = Transform.canves.path(pathStream.join(" ")).attr({"stroke-dasharray": "--", opacity: .5});
-  
   this.center.sx = (box.top.x + box.bottom.x) / 2;
   this.center.sy = (box.top.y + box.bottom.y) / 2;
   
   this.handles.center = Transform.canves.circle(this.center.sx, this.center.sy, size / 1.5).attr({fill: "white"});
   
-  // hide the center point
-  //this.handles.center.hide();
   
   this.handles.handle.circle = Transform.canves.circle((box.top.x + box.bottom.x) / 2, box.top.y - Math.max((box.bottom.y - box.top.y) * 0.15, 30), size / 1.5).attr({fill: "white"});
       
@@ -185,9 +174,6 @@ Transform.prototype.drawHandles = function() {
    */
   // handle rotate event
   this.rotatable();
-  
-  // center drag event
-  this.center.dragable();
   
   // self move event
   this.dragable();
@@ -451,8 +437,6 @@ Transform.prototype.transform = function(options) {
     scale.y = options.y;
   }
   
-  
-  
   switch(options.type) {
    
     case "rotate":
@@ -564,7 +548,6 @@ Transform.prototype.showHandles = function() {
         //this.handles[type].show();
         break;
       case "handle":
-        //this.handles[type].line.show();
         this.handles[type].circle.toFront().show();
         break;
       case "bbox":
@@ -593,7 +576,6 @@ Transform.prototype.hideHandles = function() {
         this.handles[type].hide();
         break;
       case "handle":
-        this.handles[type].line.hide();
         this.handles[type].circle.hide();
         break;
       case "bbox":

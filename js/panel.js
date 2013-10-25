@@ -92,11 +92,26 @@ Panel.prototype.createEquipment = function(index) {
   var equipment = new Equipment(Panel.canvas, item, {});
       
   equipment.id = Panel.equipments.length;
-  equipment.class = index;
+  //equipment.class = index;
   
   //equipment.class = Panel.classes.length;
   
   Panel.equipments.push(equipment);
+};
+
+Panel.prototype.createEquipmentbyName = function(name) {
+  
+  var result = $.grep(Panel.equipmentTypes, function(type) {
+  
+    return type.name == name;
+  });
+  
+  if (result.length > 0) {
+    
+    var equipment = new Equipment(Panel.canvas, result[0], {});
+    equipment.id = Panel.equipments.length;
+    Panel.equipments.push(equipment);
+  }
 };
 
 Panel.prototype.update = function(options) {

@@ -5,16 +5,22 @@ function Mark() {
   console.log(JSON.stringify(answer));
   
   var mark_sheet = {
-    "objects":[{"name":"Upper-Carriage","class":"5","type":"images/sample_6.png","transform":"t638.9999662007735,172.500007011489s0.7,0.7,0,0"},{"name":"Lower-Carriage","class":"6","type":"images/sample_7.png","transform":"t575.6796272177227,266.4186510792856s0.7949,0.7949,0,0"},{"name":"Boom","class":"0","type":"images/sample_1.png","transform":"t781.5103279399735,-80.72306752721094s0.7,0.7,0,0r60.252,0,0"},{"name":"Stick","class":"1","type":"images/sample_2.png","transform":"t447.0443027697736,-6.596676646010934s0.7,0.7,0,0"},{"name":"Bucket","class":"4","type":"images/sample_5.png","transform":"t401.0696883766463,232.05205213547165s0.6306,0.6306,0,0r-77.5336,0,0"}],
-    "relationships":[
+    "objects": [
+      {"name":"Upper-Carriage","transform":"t638.9999662007735,172.500007011489s0.7,0.7,0,0"},
+      {"name":"Lower-Carriage","transform":"t575.6849662007735,266.420207011489s0.7949,0.7949,0,0"},
+      {"name":"Boom","transform":"t781.5103279399735,-80.72306752721099s0.7,0.7,0,0r60.252,0,0"},
+      {"name":"Stick","transform":"t447.0443027697736,-6.596676646010977s0.7,0.7,0,0"},
+      {"name":"Bucket","transform":"t401.0696883766463,232.05205213547163s0.6306,0.6306,0,0r-77.5336,0,0"}
+    ],
+    "relationships": [
       [{"name":"Upper-Carriage","anchor":1},{"name":"Boom","anchor":3},
-       {"angle":72, "max": 136, "min": -2, "scaleX":"1.00","scaleY":"1.00"}],
+       {"angle": {"max": 170, "min": 70}, "scaleX":"1.00","scaleY":"1.00"}],
       [{"name":"Upper-Carriage","anchor":2},{"name":"Lower-Carriage","anchor":0},
-       {"angle":210, "max": 5, "min": -5, "scaleX":"0.88","scaleY":"0.88"}],
+       {"angle": {"max": 215, "min": 205}, "scaleX":"0.88","scaleY":"0.88"}],
       [{"name":"Boom", "anchor":0},{"name":"Stick","anchor":2},
-       {"angle":-151, "max": 125, "min": -30, "scaleX":"1.00","scaleY":"1.00"}],
+       {"angle": {"max": 300, "min": 160}, "scaleX":"1.00","scaleY":"1.00"}],
       [{"name":"Stick","anchor":0},{"name":"Bucket","anchor":0},
-       {"angle":134, "max": 150, "min": -60, "scaleX":"1.11","scaleY":"1.11"}]
+       {"angle": {"max": 265, "min": 65}, "scaleX":"1.11","scaleY":"1.11"}]
     ]
   };
   
@@ -33,14 +39,19 @@ function Mark() {
       
       for (j = 0; j < answers.length; j++) {
         
-        if (((criterion[i][0].type === answers[j][0].type &&
+        if (((criterion[i][0].name === answers[j][0].name &&
               criterion[i][0].anchor === answers[j][0].anchor) &&
-             (criterion[i][1].type === answers[j][1].type &&
+             (criterion[i][1].name === answers[j][1].name &&
               criterion[i][1].anchor === answers[j][1].anchor))) {
           
           correct_join = true;
           
-          if (Math.abs(criterion[i][2].angle - answers[j][2].angle) < 90) {
+          if (answers[j][2].angle < 0)
+            answers[j][2].angle += 360;
+          
+          if (answers[j][2].angle < criterion[i][2].angle.max &&
+              answers[j][2].angle > criterion[i][2].angle.min) {
+            
             correct_angle = true;
           }
           
